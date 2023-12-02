@@ -38,7 +38,7 @@ public class newStage {
 
 		this.optionrt = new VBox();
 		optionrt.setAlignment(Pos.CENTER);
-		optionrt.setStyle("-fx-background-color: black;");
+		optionrt.setStyle("-fx-background-color: blue;");
 
 		this.scene = new Scene(root, 500, 500);
 		this.scene2 = new Scene(root2, 500, 500);
