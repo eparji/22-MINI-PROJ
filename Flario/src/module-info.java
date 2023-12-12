@@ -4,4 +4,5 @@ module Flario {
 	requires javafx.base;
 
 	opens main to javafx.graphics, javafx.fxml;
+	opens flario to javafx.graphics, javafx.fxml;
 }

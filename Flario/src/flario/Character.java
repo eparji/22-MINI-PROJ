@@ -8,7 +8,8 @@ public class Character extends Sprite {
 	private boolean alive;
 	private int score;
 	
-	private final static Image CHARACTER_IMAGE = new Image("images/flario-ground1.png", 64, 64, false, false);
+	private final static Image CHARACTER_IMAGE = new Image("file:///C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/character.png", 64, 64, false, false);
+//	private final static Image CHARACTER_IMAGE = new Image("images/character.png", 64, 64, false, false);
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
 	public final static double CHARACTER_SPEEDY = 6;

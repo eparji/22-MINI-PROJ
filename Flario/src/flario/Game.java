@@ -1,6 +1,6 @@
 package flario;
 
-import flario.Game;
+//import flario.Game;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -53,7 +53,8 @@ public class Game {
     	Canvas canvas = new Canvas(Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
-        Image bg = new Image("images/mainbg.png", 1280, 720, false, false);
+        Image bg = new Image("file:///C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/mainbg.png", 1280, 720, false, false);
+//        Image bg = new Image("images/mainbg.png", 1280, 720, false, false);
         gc.drawImage(bg, 0, 0);
         return canvas;
     }
@@ -65,13 +66,30 @@ public class Game {
         vbox.setSpacing(8);
 
         Button b1 = new Button("START");
+        Button b2 = new Button("DEVELOPERS");
+        Button b3 = new Button("EXIT");
         
-        vbox.getChildren().add(b1);
+        vbox.getChildren().addAll(b1, b2, b3);
         
         b1.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
                 setGame(stage);		// changes the scene into the game scene
+            }
+        });
+        
+        b2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                setGame(stage);		// changes the scene into the game scene
+            }
+        });
+        
+        b3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+            	System.out.println("Exiting...");
+    			System.exit(0);
             }
         });
         

@@ -9,7 +9,8 @@ public class Pipe extends Sprite{
     private double height;
     private double width;
     
-    private final static Image PIPE_IMAGE = new Image("images/pipe.png");
+    private final static Image PIPE_IMAGE = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/pipe.png");
+//    private final static Image PIPE_IMAGE = new Image("images/pipe.png");
     private final static double PIPE_WIDTH = 128;
 
     public Pipe(double positionX, double positionY, boolean isFaceUp, int height) {

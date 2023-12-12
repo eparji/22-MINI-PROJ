@@ -20,8 +20,9 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean gameOver;
 	private double backgroundX;
-	private Image background = new Image( "images/background.png", 1280, 720, false, false);
-	
+	private Image background = new Image( "file:///C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/background.png", 1280, 720, false, false);
+//	private Image background = new Image( "images/background.png", 1280, 720, false, false);
+
 	private Pipe pipe;
 	
 	public final static int GROUND_POSITION = 510;
