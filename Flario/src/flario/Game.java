@@ -11,6 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,6 +25,13 @@ public class Game {
 	
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
+	
+	// Apply custom styles to the buttons
+    public final static String buttonStyle = "-fx-background-color:transparent;"
+    										 + "-fx-padding:0;"
+    										 + "-fx-background-size:0;"
+    										 + "-fx-pref-width: 400;" // Set the preferred width
+    	                                     + "-fx-pref-height: 50;"; // Set the preferred height
 	
 	public Game(){
 		this.canvas = new Canvas( Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT );
@@ -53,7 +61,7 @@ public class Game {
     	Canvas canvas = new Canvas(Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
-        Image bg = new Image("file:///C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/mainbg.png", 1280, 720, false, false);
+        Image bg = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/mainmenu-bg.png", 1280, 720, false, false);
 //        Image bg = new Image("images/mainbg.png", 1280, 720, false, false);
         gc.drawImage(bg, 0, 0);
         return canvas;
@@ -62,30 +70,51 @@ public class Game {
     private VBox createVBox() {
     	VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
-        vbox.setPadding(new Insets(10));
+        vbox.setPadding(new Insets(300, 0, 0, 0));
         vbox.setSpacing(8);
 
-        Button b1 = new Button("START");
-        Button b2 = new Button("DEVELOPERS");
-        Button b3 = new Button("EXIT");
+        Image play = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/play-btn.png", 300, 75, false, false);
+        ImageView playV = new ImageView(play);
         
-        vbox.getChildren().addAll(b1, b2, b3);
+        Image dev = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/dev-btn.png", 300, 75, false, false);
+        ImageView devV = new ImageView(dev);
         
-        b1.setOnAction(new EventHandler<ActionEvent>() {
+        Image opt = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/options-btn.png", 300, 75, false, false);
+        ImageView optV = new ImageView(opt);
+
+        Image exit = new Image("file:C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/exit-btn.png", 300, 75, false, false);
+        ImageView exitV = new ImageView(exit);
+        
+        Button startBtn = new Button();
+        Button devBtn = new Button();
+        Button exitBtn = new Button();
+        
+        startBtn.setGraphic(playV);
+        devBtn.setGraphic(devV);
+        exitBtn.setGraphic(exitV);
+        
+        // Set styles for the buttons
+        startBtn.setStyle(buttonStyle);
+        devBtn.setStyle(buttonStyle);
+        exitBtn.setStyle(buttonStyle);
+        
+        vbox.getChildren().addAll(startBtn, devBtn, exitBtn);
+        
+        startBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
                 setGame(stage);		// changes the scene into the game scene
             }
         });
         
-        b2.setOnAction(new EventHandler<ActionEvent>() {
+        devBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
                 setGame(stage);		// changes the scene into the game scene
             }
         });
         
-        b3.setOnAction(new EventHandler<ActionEvent>() {
+        exitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
             	System.out.println("Exiting...");
@@ -95,6 +124,16 @@ public class Game {
         
         return vbox;
     }
+    
+    void devInfo(Stage stage) {
+        stage.setScene( this.gameScene );	
+        
+        GraphicsContext gc = this.canvas.getGraphicsContext2D();	// we will pass this gc to be able to draw on this Game's canvas
+        
+        GameTimer gameTimer = new GameTimer(gameScene, gc);
+        gameTimer.start();			// this internally calls the handle() method of our GameTimer
+        
+	}
 	
 	void setGame(Stage stage) {
         stage.setScene( this.gameScene );	
