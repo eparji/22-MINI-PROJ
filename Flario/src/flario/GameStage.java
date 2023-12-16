@@ -27,7 +27,8 @@ public class GameStage {
 	private Stage stage;
 	private Scene splashScene;		// the splash scene
 	private Scene gameScene;		// the game scene
-	private Scene aboutScene;         // the scene showing devs and references
+	private Scene aboutScene;       // the scene showing devs and references
+	private Scene instScene;        // the scene showing the how to's of the game
 	private Group root;
 	private Canvas canvas;			// the canvas where the animation happens
 	private static MediaPlayer bgplayer;
@@ -36,8 +37,8 @@ public class GameStage {
 	
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
-	public final static int ABOUT_WINDOW_WIDTH = 1920;
-	public final static int ABOUT_WINDOW_HEIGHT = 1080;
+//	public final static int ABOUT_WINDOW_WIDTH = 1920;
+//	public final static int ABOUT_WINDOW_HEIGHT = 1080;
 	
     private final static String BUTTONSTYLE = "-fx-background-color:transparent;"
     										 + "-fx-padding:0;"
@@ -63,6 +64,7 @@ public class GameStage {
         
 		this.initSplash(stage);			// initializes the Splash Screen with the New Game button
 		this.initAbout(stage);          // initializes the About Screen with return to main menu button
+		this.initInst(stage);
 		
 		stage.setScene( this.splashScene );
         stage.setResizable(false);
@@ -110,7 +112,7 @@ public class GameStage {
         this.splashScene = new Scene(root);
 	}
 	
-	// creates an aboutscene containing information about the devs and the references
+	// creates an about scene containing information about the devs and the references
 	private void initAbout(Stage stage) {
 		StackPane about = new StackPane();
 		
@@ -128,6 +130,46 @@ public class GameStage {
 	    about.getChildren().addAll(createCanvas("file:src/images/about.png"), retmain);
 
 		this.aboutScene = new Scene(about);
+	}
+	
+	// create the instruction scene containing the controls, and different things 
+	// a player might come accross in the game
+	private void initInst(Stage stage) {
+		ScrollPane inst = new ScrollPane();
+		this.instScene = new Scene(inst,GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
+        inst.setContent(this.createInstPane());
+	}
+	
+	// creates a pane object containing the contents of the scroll pane for the scene
+	private Pane createInstPane() {
+		Pane root = new Pane();
+		
+		Image instImg = new Image("file:src/images/instructions.png");
+		ImageView instV = new ImageView(instImg);
+		
+		Image ret = new Image("file:src/images/return-main-btn.png", 300, 75, true, true);
+        ImageView retV = new ImageView(ret);
+
+	    Button retmain = new Button();
+
+	    retmain.setGraphic(retV);
+	    retmain.setStyle(BUTTONSTYLE);
+	    
+	    retmain.setOnMouseClicked(event -> showMenu(stage));
+	    
+	    // positioning a button in a Pane involves the bind() method
+	    // number subtraction operation are expressed by using subtract() method
+	    retmain.layoutXProperty().bind(root.widthProperty().subtract(retmain.widthProperty()).divide(2)); // Center horizontally
+        retmain.layoutYProperty().bind(root.heightProperty().subtract(retmain.heightProperty()).subtract(50)); 
+	    
+	    Canvas canvas = new Canvas(1280, (ret.getWidth() / 1920 * 720));
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        Image bg = new Image("file:src/images/mainbg.png");
+        gc.drawImage(bg, 0, 0);
+	    
+	    root.getChildren().addAll(canvas, instV, retmain);
+	    
+	    return(root);
 	}
 
 	private Canvas createCanvas(String filepath) {
@@ -153,6 +195,10 @@ public class GameStage {
 	
 	void devInfo(Stage stage) {
         stage.setScene(this.aboutScene);
+	}
+	
+	void gameInst(Stage stage) {
+		stage.setScene(this.instScene);
 	}
 	
 	void endGame() {
@@ -200,7 +246,7 @@ public class GameStage {
         
         devBtn.setOnAction(event -> devInfo(stage));
         
-        insBtn.setOnAction(event -> setGame(stage));
+        insBtn.setOnAction(event -> gameInst(stage));
         
         exitBtn.setOnAction(event -> endGame());
         
