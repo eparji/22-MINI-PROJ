@@ -30,15 +30,15 @@ public class GameStage {
 	private Scene aboutScene;         // the scene showing devs and references
 	private Group root;
 	private Canvas canvas;			// the canvas where the animation happens
-	private MediaPlayer bgplayer, gameplayer;
+	private static MediaPlayer bgplayer;
+	private static MediaPlayer gameplayer;
+	private static MediaPlayer gameover;
 	
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
+	public final static int ABOUT_WINDOW_WIDTH = 1920;
+	public final static int ABOUT_WINDOW_HEIGHT = 1080;
 	
-//	private final static Image INSTRUCTION_PAGE = new Image("", 1280, 720, false, false);
-//	private final static Image ABOUTDEVS_PAGE = new Image("", 1280, 720, false, false);
-	
-	// Apply custom styles to the buttons
     private final static String BUTTONSTYLE = "-fx-background-color:transparent;"
     										 + "-fx-padding:0;"
     										 + "-fx-background-size:0;"
@@ -47,7 +47,9 @@ public class GameStage {
     
     private final static Media GAME_MUSIC = new Media(GameStage.class.getResource("/music/flario-theme.mp3").toExternalForm());
     private final static Media BG_MUSIC = new Media(GameStage.class.getResource("/music/menu-theme.mp3").toExternalForm());
-	
+//    private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
+    private final static Media GAMEOVER = new Media(GameStage.class.getResource("/music/flario-gameover.mp3").toExternalForm());
+
 	public GameStage(){
 		this.canvas = new Canvas( GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT );
 		this.root = new Group();
@@ -60,31 +62,46 @@ public class GameStage {
 		stage.setTitle( "FlaRio" );
         
 		this.initSplash(stage);			// initializes the Splash Screen with the New Game button
-		this.initAbout(stage);
+		this.initAbout(stage);          // initializes the About Screen with return to main menu button
+		
 		stage.setScene( this.splashScene );
         stage.setResizable(false);
-        playbgmusic();
+        playbgmusic();                  // plays background music 
 		stage.show();
 	}
 	
-	// Method that plays background music when the stage is called
+	// method that plays background music when the stage is called
 	void playbgmusic() {
 		if(gameplayer != null) gameplayer.stop();
 		
-	    bgplayer = new MediaPlayer(BG_MUSIC);
+	    bgplayer = new MediaPlayer(GameStage.BG_MUSIC);
 	    bgplayer.setVolume(0.18);
 	    bgplayer.setCycleCount(MediaPlayer.INDEFINITE); // Play the music indefinitely
 	    bgplayer.play();
 	}
 	
+	// method that plays the game music when play button gets clicked
 	void playgamemusic()
 	{
 		if(bgplayer != null) bgplayer.stop();
 		
-		gameplayer = new MediaPlayer(GAME_MUSIC);
+		gameplayer = new MediaPlayer(GameStage.GAME_MUSIC);
 		gameplayer.setVolume(0.12);
-		gameplayer.setCycleCount(MediaPlayer.INDEFINITE); // Play the music indefinitely
+		gameplayer.setCycleCount(MediaPlayer.INDEFINITE); 
 		gameplayer.play();
+	}
+	
+	// new method
+	// method that plays the gameover music when timer runs out
+	static void playgameover()
+	{
+		if(gameplayer != null) gameplayer.stop();
+		
+		gameover = new MediaPlayer(GameStage.GAMEOVER);
+		gameover.setVolume(0.18);
+		gameover.setCycleCount(1); 
+		gameover.play();
+		
 	}
 	
 	private void initSplash(Stage stage) {
@@ -93,6 +110,7 @@ public class GameStage {
         this.splashScene = new Scene(root);
 	}
 	
+	// creates an aboutscene containing information about the devs and the references
 	private void initAbout(Stage stage) {
 		StackPane about = new StackPane();
 		
@@ -106,7 +124,7 @@ public class GameStage {
 	    
 	    retmain.setOnMouseClicked(event -> showMenu(stage));
 		StackPane.setAlignment(retmain, Pos.BOTTOM_CENTER);
-		StackPane.setMargin(retmain, new Insets(0, 0, 10, 0)); // top, right, bottom, left
+		StackPane.setMargin(retmain, new Insets(0, 0, 10, 0)); 
 	    about.getChildren().addAll(createCanvas("file:src/images/about.png"), retmain);
 
 		this.aboutScene = new Scene(about);
@@ -117,7 +135,6 @@ public class GameStage {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
         Image bg = new Image(filepath, 1280, 720, true, true);
-        //        Image bg = new Image("images/mainbg.png", 1280, 720, false, false);
         gc.drawImage(bg, 0, 0);
         return canvas;
     }
