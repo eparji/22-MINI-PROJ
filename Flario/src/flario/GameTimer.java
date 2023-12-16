@@ -28,10 +28,13 @@ public class GameTimer extends AnimationTimer {
 
 	private Pipe pipe;
 	private static int gameTime;
+	private static int elapsedTime;
 	
 	public final static int GROUND_POSITION = 510;
 	public final static double GRAVITY_SPEED = 0.1;
 	public final static int BACKGROUND_SPEED = 1;
+	public final static double TIME_SCORE_MULT = 0.35;
+	public final static int INIT_SCORE = 50;
 	
     GameTimer(Scene scene, GraphicsContext gc) {
     	this.gc = gc;
@@ -43,7 +46,8 @@ public class GameTimer extends AnimationTimer {
     	this.pipe = new Pipe(640, GROUND_POSITION - 192, true, 192);
     	
     	// game duration
-    	GameTimer.gameTime = 60;
+    	GameTimer.gameTime = 90;
+    	GameTimer.elapsedTime = 0;
     	
     	this.prepareActionHandlers();
     }
@@ -134,6 +138,7 @@ public class GameTimer extends AnimationTimer {
                 if(code.equals("P")) {
                 	GameTimer.gameOver = true;
                 	GameTimer.gameTime = 0; // adds a gametime setter
+                	GameTimer.elapsedTime = 90;
                 }
                 
             }
@@ -173,7 +178,9 @@ public class GameTimer extends AnimationTimer {
 	    // Create a key frame that updates the remaining time every second
 	    KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
 	        gameTime--;
-	        if (gameTime <= 0) {
+	        elapsedTime++;
+	        printScore();
+	        if (gameTime < 0) {
 	            timeline[0].stop(); // Stop the timeline
 	            GameStage.playgameover();
 	            this.stop();
@@ -185,13 +192,6 @@ public class GameTimer extends AnimationTimer {
 	    timeline[0] = new Timeline(keyFrame);
 	    timeline[0].setCycleCount(gameTime);
 	    timeline[0].play();
-	}
-	
-	// added
-	private void drawGameOver() {
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
-		this.gc.setFill(Color.WHITE);
-		this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
 	}
 	
 	/*
@@ -230,21 +230,54 @@ public class GameTimer extends AnimationTimer {
         
 	}
 	
+	// logic behind remaining time printing
+	private String computeTime() {
+		int time = gameTime;
+		String min, sec;
+		
+		if(time > 59) {
+			min = String.valueOf(time/60);
+		}
+		else {
+			min = "0";
+		}
+		
+		int seconds = time%60;
+		
+		if(seconds == 0) sec = "00";
+		if(seconds > 9) sec = String.valueOf(seconds);
+		else sec = "0" + String.valueOf(seconds);
+		
+		String normalizedTime = min + ":" + sec;
+		
+		return(normalizedTime);
+	}
+	
+	private String computeScore() {
+		double score = INIT_SCORE - (elapsedTime*TIME_SCORE_MULT);
+		return(String.format("%.2f", score));
+	}
+	
+	private void printScore() {
+		System.out.println("TIME LEFT: " + computeTime());
+		System.out.println("USER'S SCORE IS: " + computeScore() + "\n");
+	}
+	
 	private void drawScore(){
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.YELLOW);
 		// modified the ff code
-		this.gc.fillText("Remaining Time: " + String.valueOf(GameTimer.gameTime), 20, 30);
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-		this.gc.setFill(Color.WHITE);
+		this.gc.fillText("Remaining Time: " + computeTime(), 20, 30);
+		
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.YELLOW);
+		this.gc.fillText("Score: " + computeScore(), 300, 30);
 	}
 	
-	/*
-	 * private void drawGameOver(){ this.gc.setFont(Font.font("Verdana",
-	 * FontWeight.BOLD, 50)); this.gc.setFill(Color.WHITE);
-	 * this.gc.fillText("GAME OVER!", 20, Game.WINDOW_HEIGHT/2); }
-	 */
-	
-	
+	private void drawGameOver() {
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
+		this.gc.setFill(Color.WHITE);
+		this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
+	}
 	
 }
