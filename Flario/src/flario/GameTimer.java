@@ -20,7 +20,7 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean gameOver;
 	private double backgroundX;
-	private Image background = new Image( "file:///C:/Users/ASUS/git/22-MINI-PROJ/Flario/src/images/background.png", 1280, 720, false, false);
+	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
 //	private Image background = new Image( "images/background.png", 1280, 720, false, false);
 
 	private Pipe pipe;
@@ -57,7 +57,7 @@ public class GameTimer extends AnimationTimer {
     
     void redrawBackgroundImage() {
 		// clear the canvas
-        this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT);
+        this.gc.clearRect(0, 0, GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
 
         // redraw background image (moving effect)
         this.backgroundX -= GameTimer.BACKGROUND_SPEED;
@@ -77,8 +77,8 @@ public class GameTimer extends AnimationTimer {
         }
         
         
-        if(this.backgroundX>=Game.WINDOW_WIDTH) 
-        	this.backgroundX = Game.WINDOW_WIDTH-this.background.getWidth();
+        if(this.backgroundX>=GameStage.WINDOW_WIDTH) 
+        	this.backgroundX = GameStage.WINDOW_WIDTH-this.background.getWidth();
         System.out.println("Background X: " + this.backgroundX);
     }
     

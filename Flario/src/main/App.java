@@ -1,6 +1,6 @@
 package main;
 
-import flario.Game;
+import flario.GameStage;
 import javafx.application.Application;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -16,7 +16,7 @@ public class App extends Application{
 	
 	public void start(Stage stage) {
 		Font.loadFont(getClass().getClassLoader().getResourceAsStream("PressStart2P-Regular.ttf"), 20);		
-		Game game = new Game();
+		GameStage game = new GameStage();
 		game.setStage(stage);
 	}
 	

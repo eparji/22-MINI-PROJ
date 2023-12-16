@@ -97,7 +97,7 @@ public class Sprite {
     void updatePosition() {
     	//if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_HEIGHT-this.height)
 			//this.yPos += this.dy;
-    	if(this.positionX+this.velocityX >= 0 && this.positionX+this.velocityX <= Game.WINDOW_WIDTH-this.width) {
+    	if(this.positionX+this.velocityX >= 0 && this.positionX+this.velocityX <= GameStage.WINDOW_WIDTH-this.width) {
 			this.positionX += this.velocityX;
     	}
     	
