@@ -123,8 +123,8 @@ public class GameStage {
 
 	    retmain.setGraphic(retV);
 	    retmain.setStyle(BUTTONSTYLE);
-	    
-	    retmain.setOnMouseClicked(event -> showMenu(stage));
+	    setButtonActionsAndStyles(retmain, event -> showMenu(stage), BUTTONSTYLE);
+
 		StackPane.setAlignment(retmain, Pos.BOTTOM_CENTER);
 		StackPane.setMargin(retmain, new Insets(0, 0, 10, 0)); 
 	    about.getChildren().addAll(createCanvas("file:src/images/about.png"), retmain);
@@ -154,8 +154,7 @@ public class GameStage {
 
 	    retmain.setGraphic(retV);
 	    retmain.setStyle(BUTTONSTYLE);
-	    
-	    retmain.setOnMouseClicked(event -> showMenu(stage));
+	    setButtonActionsAndStyles(retmain, event -> showMenu(stage), BUTTONSTYLE);
 	    
 	    // positioning a button in a Pane involves the bind() method
 	    // number subtraction operation are expressed by using subtract() method
@@ -242,14 +241,17 @@ public class GameStage {
         
         vbox.getChildren().addAll(startBtn, devBtn, insBtn, exitBtn);
         
-        startBtn.setOnAction(event -> setGame(stage));
-        
-        devBtn.setOnAction(event -> devInfo(stage));
-        
-        insBtn.setOnAction(event -> gameInst(stage));
-        
-        exitBtn.setOnAction(event -> endGame());
+        setButtonActionsAndStyles(startBtn, event -> setGame(stage), BUTTONSTYLE);
+        setButtonActionsAndStyles(devBtn, event -> devInfo(stage), BUTTONSTYLE);
+        setButtonActionsAndStyles(insBtn, event -> gameInst(stage), BUTTONSTYLE);        
+        setButtonActionsAndStyles(exitBtn, event -> endGame(), BUTTONSTYLE);        
         
         return vbox;
+    }
+    
+    private void setButtonActionsAndStyles(Button button, EventHandler<ActionEvent> actionEvent, String buttonStyle) {
+        button.setOnAction(actionEvent);
+        button.setOnMouseEntered(event -> button.setStyle(buttonStyle + "-fx-opacity: 0.8;"));
+        button.setOnMouseExited(event -> button.setStyle(buttonStyle));
     }
 }
