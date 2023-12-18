@@ -1,5 +1,7 @@
 package flario;
 
+import java.io.InputStream;
+
 import flario.GameStage;
 //import flario.Game;
 import javafx.event.ActionEvent;
@@ -21,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameStage {
@@ -50,7 +53,15 @@ public class GameStage {
     private final static Media BG_MUSIC = new Media(GameStage.class.getResource("/music/menu-theme.mp3").toExternalForm());
 //    private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
     private final static Media GAMEOVER = new Media(GameStage.class.getResource("/music/flario-gameover.mp3").toExternalForm());
+    
+    public final static Font FONT_8BIT;
+    
+    static {
+        InputStream is = GameStage.class.getResourceAsStream("/PressStart2P-Regular.ttf");
+        FONT_8BIT = Font.loadFont(is, 20);
+      }
 
+    
 	public GameStage(){
 		this.canvas = new Canvas( GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT );
 		this.root = new Group();
