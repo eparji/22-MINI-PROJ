@@ -58,6 +58,8 @@ public class Sprite {
 	  
 	}
 	
+	
+	
 	public void setImage(Image image) {
         this.image = image;
         setSize();

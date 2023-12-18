@@ -20,11 +20,24 @@ public class GameTimer extends AnimationTimer {
 	private GraphicsContext gc;
 	private Character character;
 	private Scene scene;
+	
+	// added
 	private static boolean goUp, goDown, goLeft, goRight;
+	private static boolean moveScreenLeft, moveScreenRight;
+	private ArrayList<Pipe> pipes; //array list of bottom pipes
+	private ArrayList<Pipe> topPipes; //array list of upper pipes
+	
 	private static boolean gameOver;
+	
 	private double backgroundX;
 	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
-
+	
+	// added
+	private Image background2 = new Image(GameTimer.class.getResource("/images/plainsky.png").toString(), 1280, 720, false, false);
+	private long startSpawn;
+	public final static double SPAWN_DELAY = 1;
+    
+	
 	private Pipe pipe;
 	private static int gameTime;
 	private static int elapsedTime;
@@ -34,6 +47,14 @@ public class GameTimer extends AnimationTimer {
 	public final static int BACKGROUND_SPEED = 1;
 	public final static double TIME_SCORE_MULT = 0.5;
 	
+	// added
+	public final static int WIDTH_PER_PIPE = 80;
+	public final static int PIPE_INITIAL_XPOS = 1280;
+	public final static int PIPE_SPAWN_INTERVAL = 200;
+	public final static int LEFT_EDGE = 100;
+	public final static int RIGHT_EDGE = 1100;
+	
+	
     GameTimer(Scene scene, GraphicsContext gc) {
     	this.gc = gc;
     	this.scene = scene;    	
@@ -42,6 +63,12 @@ public class GameTimer extends AnimationTimer {
     	
     	// test pipe
     	this.pipe = new Pipe(640, GROUND_POSITION - 192, true, 192);
+    	
+    	// added
+//    	this.pipes = new ArrayList<Pipe>();
+//    	this.topPipes = new ArrayList<Pipe>();
+//    	this.startSpawn = System.nanoTime();
+//    	
     	
     	// game duration
     	GameTimer.gameTime = 90;
@@ -54,14 +81,17 @@ public class GameTimer extends AnimationTimer {
 	public void handle(long currentNanoTime)
     {
 		this.redrawBackgroundImage();
+		
+//        this.autoSpawn(currentNanoTime);
         this.renderSprites();
+//        this.handleCollision();
         this.moveSprites();
         this.drawScore();
         
-        //if(!this.guardian.isAlive()) {
-        //	this.stop();				// stops this AnimationTimer (handle will no longer be called) so all animations will stop
-        //	this.drawGameOver();		// draw Game Over text
-       // }
+        if(!this.character.isAlive()) {
+        	this.stop();				
+        	this.drawGameOver();		
+       	}
     }
     
     void redrawBackgroundImage() {
@@ -98,13 +128,89 @@ public class GameTimer extends AnimationTimer {
         
         this.pipe.render(this.gc);
        
+        // added
+        // draw Sprites in ArrayLists
+//        for (Pipe pipe : this.pipes) {
+//        	pipe.render( this.gc );
+//        	
+//        }
+//        
+//        for(Pipe topPipe : this.topPipes) {
+//        	topPipe.render( this.gc );
+//        }
     }
     
     void moveSprites() {
+    	// added
+//    	if(this.character.isGrounded()) {
+//    		this.moveCharacterGrounded();
+//    	}
+//    	else {
+//    		this.moveCharacterFlying();
+//    	}
+//        this.movePipe();
+    	
         this.moveCharacter();
        
     }
 	
+    // added methods
+//    void autoSpawn(long currentNanoTime) {
+//    	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
+//    	
+//    	
+//        if(spawnElapsedTime > GameTimer.SPAWN_DELAY) {
+//        	this.spawnPipes();
+//        	this.character.setScore(this.character.getScore()+1); //test score
+//        	this.startSpawn = System.nanoTime();
+//        }
+//    }
+//    
+//    
+//    private void spawnPipes(){
+//		int xPos = 1280;
+//		Random r = new Random();
+//		
+//		int middle = 250;
+//		
+//		int interval = xPos - PIPE_SPAWN_INTERVAL; //spawning interval
+//		
+//		int top = r.nextInt(middle); //random number for the basis of bottom and top pipe position
+//		int bottomPos = (400 + top); //position of bottom pipe
+//		int topPos = top - 400; //correcting the position of top pipe
+//		
+//		//312 and 0
+//		if(this.pipes.size() == 0) {//first set of pipes
+//			this.pipes.add(new Pipe(xPos, bottomPos, true));
+//			this.topPipes.add(new Pipe(xPos, topPos, false));
+//		}else {//following pipes
+//			int size = this.pipes.size();
+//			if(this.pipes.get(size-1).positionX <= interval) {//interval for spawning the next pipe
+//				this.pipes.add(new Pipe(xPos, bottomPos, true));
+//				this.topPipes.add(new Pipe(xPos, topPos, false));
+//			} 		
+//		}
+//		
+//
+//	}
+//    
+//    
+//    private void movePipe() {
+//		for(int i = 0; i < this.pipes.size(); i++){
+//			Pipe pipe = this.pipes.get(i);
+//			Pipe topPipe = this.topPipes.get(i);
+//			if(pipe.isVisible() && topPipe.isVisible()){
+//				topPipe.move();
+//				pipe.move();
+//			}
+//			else {
+//				this.pipes.remove(i);
+//				this.topPipes.remove(i);
+//			}
+//		}
+//	}
+    
+    
     /*
      * Catches the left and right key presses for the guardian's movement
      * */
@@ -167,7 +273,103 @@ public class GameTimer extends AnimationTimer {
         });
     }
 	
-	// new method
+	// added methods
+//	private void moveCharacterGrounded() {
+//		if (GameTimer.goLeft) {
+//			if(this.character.getPositionX() <= LEFT_EDGE) {
+//				GameTimer.moveScreenRight = true;
+//				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
+//			}
+//			else {
+//			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+//			}
+//		}
+//		else if(GameTimer.goRight) {
+//			if(this.character.getPositionX() >= RIGHT_EDGE) {
+//				GameTimer.moveScreenLeft = true;
+//				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
+//			}
+//			else {
+//			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+//			}
+//		}
+//		else {
+//			this.character.setVelocityX(0); //stop moving
+//		}
+//		  
+//		  if(GameTimer.goUp && this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
+//			  this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+//		  }else {//go down
+//			  this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
+//			  
+//			  if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
+//				  this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
+//				  this.character.setVelocityY(0);
+//			  }
+//			  GameTimer.goUp = false;
+//			  
+//		  }
+//		  
+//		  this.character.updatePosition();
+//	}
+//	
+//	
+//	private void moveCharacterFlying() {
+//		if (GameTimer.goLeft) {
+//			if(this.character.getPositionX() <= LEFT_EDGE) {
+//				GameTimer.moveScreenRight = true;
+//				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
+//			}
+//			else {
+//			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+//			}
+//		}
+//		else if(GameTimer.goRight) {
+//			if(this.character.getPositionX() >= RIGHT_EDGE) {
+//				GameTimer.moveScreenLeft = true;
+//				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
+//			}
+//			else {
+//			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+//			}
+//		}
+//		else {
+//			this.character.setVelocityX(0); //stop moving
+//		}
+//		
+//		if(GameTimer.goUp) {
+//			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+//			GameTimer.goUp = false;
+//		}
+//		else {//go down
+//			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
+//			GameTimer.goUp = false;
+//		}
+//		 
+//		this.character.updatePosition();
+//	}
+//	
+//	
+//	private void handleCollision() {
+//		this.character.drawBounds(gc);
+//		
+//		for(int i = 0; i < this.pipes.size(); i++){
+//			Pipe pipe = this.pipes.get(i);
+//			Pipe topPipe = this.topPipes.get(i);
+//			
+//			pipe.drawBounds(gc);
+//			topPipe.drawBounds(gc);
+//			
+//			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
+//				this.character.setHealth(this.character.getHealth()-25);
+//				this.character.setVelocityX(0);
+//				this.character.setVelocityY(0);
+//			}
+//			
+//			System.out.println(this.character.getHealth());
+//		}
+//	}
+	
 	// implements a counting down mechanism
 	private void startCountdown() {
 	    // Create an array of Timeline with a single element
