@@ -24,7 +24,6 @@ public class GameTimer extends AnimationTimer {
 	private static boolean gameOver;
 	private double backgroundX;
 	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
-//	private Image background = new Image( "images/background.png", 1280, 720, false, false);
 
 	private Pipe pipe;
 	private static int gameTime;
