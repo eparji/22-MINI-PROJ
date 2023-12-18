@@ -33,8 +33,7 @@ public class GameTimer extends AnimationTimer {
 	public final static int GROUND_POSITION = 510;
 	public final static double GRAVITY_SPEED = 0.1;
 	public final static int BACKGROUND_SPEED = 1;
-	public final static double TIME_SCORE_MULT = 0.35;
-	public final static int INIT_SCORE = 50;
+	public final static double TIME_SCORE_MULT = 0.5;
 	
     GameTimer(Scene scene, GraphicsContext gc) {
     	this.gc = gc;
@@ -254,8 +253,9 @@ public class GameTimer extends AnimationTimer {
 	}
 	
 	private String computeScore() {
-		double score = INIT_SCORE - (elapsedTime*TIME_SCORE_MULT);
-		return(String.format("%.2f", score));
+		int score = (int) (Character.INIT_SCORE - (elapsedTime*TIME_SCORE_MULT));
+		this.character.setScore(score);
+		return(String.format("%d", this.character.getScore()));
 	}
 	
 	private void printScore() {
@@ -264,18 +264,18 @@ public class GameTimer extends AnimationTimer {
 	}
 	
 	private void drawScore(){
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		// modified the ff code
 		this.gc.fillText("Remaining Time: " + computeTime(), 20, 30);
 		
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
-		this.gc.fillText("Score: " + computeScore(), 300, 30);
+		this.gc.fillText("Score: " + computeScore(), 500, 30);
 	}
 	
 	private void drawGameOver() {
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
+		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.WHITE);
 		this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
 	}
