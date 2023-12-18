@@ -119,7 +119,7 @@ public class GameStage {
 	
 	private void initSplash(Stage stage) {
 		StackPane root = new StackPane();
-        root.getChildren().addAll(this.createCanvas("file:src/images/mainmenu-bg.png"),this.createVBox());
+        root.getChildren().addAll(this.createCanvas("mainmenu-bg.png"),this.createVBox());
         this.splashScene = new Scene(root);
 	}
 	
@@ -127,7 +127,7 @@ public class GameStage {
 	private void initAbout(Stage stage) {
 		StackPane about = new StackPane();
 		
-		Image ret = new Image("file:src/images/return-main-btn.png", 300, 75, true, true);
+		Image ret = new Image("return-main-btn.png", 300, 75, true, true);
         ImageView retV = new ImageView(ret);
 
 	    Button retmain = new Button();
@@ -138,7 +138,7 @@ public class GameStage {
 
 		StackPane.setAlignment(retmain, Pos.BOTTOM_CENTER);
 		StackPane.setMargin(retmain, new Insets(0, 0, 10, 0)); 
-	    about.getChildren().addAll(createCanvas("file:src/images/about.png"), retmain);
+	    about.getChildren().addAll(createCanvas("about.png"), retmain);
 
 		this.aboutScene = new Scene(about);
 	}
@@ -155,10 +155,10 @@ public class GameStage {
 	private Pane createInstPane() {
 		Pane root = new Pane();
 		
-		Image instImg = new Image("file:src/images/instructions.png");
+		Image instImg = new Image("instructions.png");
 		ImageView instV = new ImageView(instImg);
 		
-		Image ret = new Image("file:src/images/return-main-btn.png", 300, 75, true, true);
+		Image ret = new Image("return-main-btn.png", 300, 75, true, true);
         ImageView retV = new ImageView(ret);
 
 	    Button retmain = new Button();
@@ -174,7 +174,7 @@ public class GameStage {
 	    
 	    Canvas canvas = new Canvas(1280, (ret.getWidth() / 1920 * 720));
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        Image bg = new Image("file:src/images/mainbg.png");
+        Image bg = new Image("mainbg.png");
         gc.drawImage(bg, 0, 0);
 	    
 	    root.getChildren().addAll(canvas, instV, retmain);
@@ -222,16 +222,16 @@ public class GameStage {
         vbox.setPadding(new Insets(300, 0, 0, 0));
         vbox.setSpacing(5);
 
-        Image play = new Image("file:src/images/play-btn.png", 300, 75, true, true);
+        Image play = new Image("play-btn.png", 300, 75, true, true);
         ImageView playV = new ImageView(play);
         
-        Image dev = new Image("file:src/images/dev-btn.png", 300, 75, true, true);
+        Image dev = new Image("dev-btn.png", 300, 75, true, true);
         ImageView devV = new ImageView(dev);
         
-        Image ins = new Image("file:src/images/instructions-btn.png", 300, 75, true, true);
+        Image ins = new Image("instructions-btn.png", 300, 75, true, true);
         ImageView insV = new ImageView(ins);
 
-        Image exit = new Image("file:src/images/exit-btn.png", 300, 75, true, true);
+        Image exit = new Image("exit-btn.png", 300, 75, true, true);
         ImageView exitV = new ImageView(exit);
         
         Button startBtn = new Button();

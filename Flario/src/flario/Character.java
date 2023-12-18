@@ -10,7 +10,7 @@ public class Character extends Sprite {
 	private boolean isGrounded;
 	private int health;
 	
-	private final static Image CHARACTER_IMAGE = new Image("file:src/images/character.png", 64, 64, false, false);
+	private final static Image CHARACTER_IMAGE = new Image("character.png", 64, 64, false, false);
 //	private final static Image CHARACTER_IMAGE = new Image("images/character.png", 64, 64, false, false);
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;

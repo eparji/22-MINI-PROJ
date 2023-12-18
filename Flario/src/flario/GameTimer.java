@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -23,7 +24,7 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean gameOver;
 	private double backgroundX;
-	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
+	private Image background = new Image( "background.png", 1280, 720, false, false);
 
 	private Pipe pipe;
 	private static int gameTime;
@@ -131,6 +132,11 @@ public class GameTimer extends AnimationTimer {
                 
                 if(code.equals("DOWN") || code.equals("S")) {
                 	GameTimer.goDown = true;
+                	//added as of dec 18
+                	//tentative mini game trigger (must be triggered by stack overflow buff)
+                	MiniWindow minigame = new MiniWindow(); //launch mini game
+                	minigame.start();
+                	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
                 }
                 
                 if(code.equals("P")) {
@@ -166,6 +172,23 @@ public class GameTimer extends AnimationTimer {
             }
         });
     }
+	
+	//time increment new method - added as of dec 18
+	public static void setGameTime(int time) { //adding collected time to game time
+		GameTimer.gameTime += time;
+	}
+	
+	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
+	    PauseTransition pt = new PauseTransition(duration); //pauses the game for 5 secs
+	    pt.setOnFinished(event -> timer.start()); //game continues after the minigame
+
+	    timer.stop();
+	    pt.play();
+	}
+	
+	private AnimationTimer getTimer() {
+		return this;
+	}
 	
 	// new method
 	// implements a counting down mechanism
