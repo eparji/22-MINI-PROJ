@@ -15,26 +15,52 @@ public class Sprite {
 	protected double height;
 	protected boolean visible;
 
-    public Sprite(double positionX, double positionY, double width, double height, Image image){
+	public Sprite(double positionX, double positionY, double width, double height, Image image){
 		this.positionX = positionX;
 		this.positionY = positionY;
-		this.setImage(image);
+		this.loadImage(image);
 		this.visible = true;
-		this.setSize(width, height);
+		this.width = width;
+		this.height = height;
+	
+	
 	}
 
 	public Rectangle2D getBounds(){
 		return new Rectangle2D(positionX, positionY, width, height);
 	}
 	
-	private void setSize(double width, double height){
-		this.width = width;
-        this.height = height;
+	public void drawBounds(GraphicsContext gc) {
+    	gc.strokeRect(this.getBounds().getMinX(), this.getBounds().getMinY(), this.getBounds().getWidth(), this.getBounds().getHeight());
+    }
+	
+	private void setSize(){
+		this.width = this.image.getWidth();
+        this.height = this.image.getHeight();
+	}
+	
+	public void loadImage(Image image) {
+		try{
+			this.image = image;
+	        this.setSize();
+		} catch(Exception e)	{
+			e.printStackTrace();
+		}
+        
+    }
+	
+	protected boolean collidesWith(Sprite s){
+		  
+		Rectangle2D rectangle1 = this.getBounds(); 
+		Rectangle2D rectangle2 = s.getBounds();
+	  
+		return rectangle1.intersects(rectangle2);
+	  
 	}
 	
 	public void setImage(Image image) {
         this.image = image;
-        setSize(image.getWidth(), image.getHeight());
+        setSize();
     }
 	
 	public void resizeImage(String filepath, double width, double height) {
@@ -42,9 +68,6 @@ public class Sprite {
         setImage(toReturn);
     }
 	
-	protected boolean collidesWith(Sprite s)	{
-		return s.getBounds().intersects(this.getBounds());
-	}
 	
 	public void render(GraphicsContext gc){
         gc.drawImage( this.image, this.positionX, this.positionY );
@@ -97,10 +120,10 @@ public class Sprite {
     void updatePosition() {
     	//if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_HEIGHT-this.height)
 			//this.yPos += this.dy;
-    	if(this.positionX+this.velocityX >= 0 && this.positionX+this.velocityX <= GameStage.WINDOW_WIDTH-this.width) {
-			this.positionX += this.velocityX;
-    	}
-    	
+//    	if(this.positionX+this.velocityX >= 0 && this.positionX+this.velocityX <= GameStage.WINDOW_WIDTH-this.width) {
+//			this.positionX += this.velocityX;
+//    	}
+    	this.positionX += this.velocityX;
     	this.positionY += this.velocityY;
 	}
     
