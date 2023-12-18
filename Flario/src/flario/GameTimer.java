@@ -117,26 +117,26 @@ public class GameTimer extends AnimationTimer {
             {
                 String code = e.getCode().toString();
                 System.out.println("User Pressed Key: " + code);
-                if(code.equals("LEFT")) {
+                if(code.equals("LEFT") || code.equals("A") ) {
                 	GameTimer.goLeft = true;
                 }
                 
-                if(code.equals("RIGHT")) {
+                if(code.equals("RIGHT") || code.equals("D")) {
                 	GameTimer.goRight = true;
                 }
                 
-                if(code.equals("UP")) {
+                if(code.equals("UP") || code.equals("W")) {
                 	GameTimer.goUp = true;
                 }
                 
-                if(code.equals("DOWN")) {
+                if(code.equals("DOWN") || code.equals("s")) {
                 	GameTimer.goDown = true;
                 }
                 
                 if(code.equals("P")) {
                 	GameTimer.gameOver = true;
-                	GameTimer.gameTime = 0; // adds a gametime setter
-                	GameTimer.elapsedTime = 90;
+                	GameTimer.gameTime = 1; // adds a gametime setter
+                	GameTimer.elapsedTime = 89;
                 }
                 
             }
@@ -147,20 +147,20 @@ public class GameTimer extends AnimationTimer {
             public void handle(KeyEvent e)
             {
                 String code = e.getCode().toString();
-                if(code.equals("LEFT")) {
+                if(code.equals("LEFT") || code.equals("A")) {
                 	GameTimer.goLeft = false;
                 }
                 
-                if(code.equals("RIGHT")) {
+                if(code.equals("RIGHT") || code.equals("D")) {
                 	GameTimer.goRight = false;
                 	
                 }
                 
-                //if(code.equals("UP")) {
+                //if(code.equals("UP") || code.equals("W")) {
                 	//GameTimer.goUp = false;
                 //}
                 
-                //if(code.equals("DOWN")) {
+                //if(code.equals("DOWN") || code.equals("S")) {
                 	//GameTimer.goDown = false;
                 //}
             }
@@ -178,7 +178,7 @@ public class GameTimer extends AnimationTimer {
 	        gameTime--;
 	        elapsedTime++;
 	        printScore();
-	        if (gameTime < 0) {
+	        if (gameTime <= 0) {
 	            timeline[0].stop(); // Stop the timeline
 	            GameStage.playgameover();
 	            this.stop();
