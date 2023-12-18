@@ -129,7 +129,7 @@ public class GameTimer extends AnimationTimer {
                 	GameTimer.goUp = true;
                 }
                 
-                if(code.equals("DOWN") || code.equals("s")) {
+                if(code.equals("DOWN") || code.equals("S")) {
                 	GameTimer.goDown = true;
                 }
                 
