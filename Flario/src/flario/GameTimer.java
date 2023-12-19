@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -477,8 +478,13 @@ public class GameTimer extends AnimationTimer {
 	
 	private void drawGameOver() {
 		this.gc.setFont(GameStage.FONT_8BIT);
-		this.gc.setFill(Color.WHITE);
-		this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
+	    this.gc.setFill(Color.WHITE);
+	    this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
+	    
+	    Button btn = new Button("Retry");
+	    btn.setLayoutX(GameStage.WINDOW_WIDTH/2); // Set the X position of the button
+	    btn.setLayoutY(GameStage.WINDOW_HEIGHT/2); // Set the Y position of the button
+//		GameStage.setGameOver(this.character.getScore(), gameTime);
 	}
 	
 }

@@ -149,6 +149,9 @@ public class GameStage {
 		ScrollPane inst = new ScrollPane();
 		this.instScene = new Scene(inst,GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
         inst.setContent(this.createInstPane());
+        
+        inst.setContent(this.createInstPane());
+        inst.requestFocus(); // Request focus on the ScrollPane
 	}
 	
 	// creates a pane object containing the contents of the scroll pane for the scene
@@ -164,7 +167,6 @@ public class GameStage {
 	    Button retmain = new Button();
 
 	    retmain.setGraphic(retV);
-	    retmain.setStyle(BUTTONSTYLE);
 	    setButtonActionsAndStyles(retmain, event -> showMenu(stage), BUTTONSTYLE);
 	    
 	    // positioning a button in a Pane involves the bind() method
@@ -244,12 +246,6 @@ public class GameStage {
         insBtn.setGraphic(insV);
         exitBtn.setGraphic(exitV);
         
-        // Set styles for the buttons
-        startBtn.setStyle(BUTTONSTYLE);
-        devBtn.setStyle(BUTTONSTYLE);
-        insBtn.setStyle(BUTTONSTYLE);
-        exitBtn.setStyle(BUTTONSTYLE);
-        
         vbox.getChildren().addAll(startBtn, devBtn, insBtn, exitBtn);
         
         setButtonActionsAndStyles(startBtn, event -> setGame(stage), BUTTONSTYLE);
@@ -261,7 +257,8 @@ public class GameStage {
     }
     
     private void setButtonActionsAndStyles(Button button, EventHandler<ActionEvent> actionEvent, String buttonStyle) {
-        button.setOnAction(actionEvent);
+    	button.setStyle(buttonStyle);
+    	button.setOnAction(actionEvent);
         button.setOnMouseEntered(event -> button.setStyle(buttonStyle + "-fx-opacity: 0.8;"));
         button.setOnMouseExited(event -> button.setStyle(buttonStyle));
     }
