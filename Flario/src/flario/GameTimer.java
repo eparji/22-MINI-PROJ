@@ -22,12 +22,15 @@ public class GameTimer extends AnimationTimer {
 	private GraphicsContext gc;
 	private Character character;
 	private Scene scene;
+	private Level level;
 	
 	// added
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean moveScreenLeft, moveScreenRight;
-	private ArrayList<Pipe> pipes; //array list of bottom pipes
-	private ArrayList<Pipe> topPipes; //array list of upper pipes
+	
+	private ArrayList<Pipe> pipes;
+	private ArrayList<Pipe> topPipes;
+	private ArrayList<Block> blocks;
 	
 	private static boolean gameOver;
 	
@@ -52,6 +55,7 @@ public class GameTimer extends AnimationTimer {
 	public final static double GRAVITY_SPEED = 0.1;
 	public final static int BACKGROUND_SPEED = 1;
 	public final static double TIME_SCORE_MULT = 0.5;
+	public final static int SCREEN_MOVE_SPEED = 2;
 	
 	// added
 	public final static int WIDTH_PER_PIPE = 80;
@@ -67,14 +71,11 @@ public class GameTimer extends AnimationTimer {
     	this.character = new Character("Mario");
     	//this.startSpawn = this.startShoot = System.nanoTime();
     	
-    	// test pipe
-    	this.pipe = new Pipe(640, GROUND_POSITION - 192, true);
-    	
-    	// added
-    	this.pipes = new ArrayList<Pipe>();
-    	this.topPipes = new ArrayList<Pipe>();
-    	this.startSpawn = System.nanoTime();
-    	
+    	// obstacle generation done through level class
+    	this.level = new Level();
+    	this.pipes = this.level.pipes;
+    	this.topPipes = this.level.topPipes;
+    	this.blocks = this.level.blocks;
     	
     	// game duration
     	GameTimer.gameTime = 90;
@@ -86,9 +87,9 @@ public class GameTimer extends AnimationTimer {
     @Override
 	public void handle(long currentNanoTime)
     {
-		this.redrawBackgroundImage();
+	this.redrawBackgroundImage();
 		
-        this.autoSpawn(currentNanoTime);
+        //this.autoSpawn(currentNanoTime);
         this.renderSprites();
         this.handleCollision();
         this.moveSprites();
@@ -143,6 +144,10 @@ public class GameTimer extends AnimationTimer {
         for(Pipe topPipe : this.topPipes) {
         	topPipe.render( this.gc );
         }
+
+        for(Block block : this.blocks) {
+        	block.render(this.gc);
+        }
     }
     
     void moveSprites() {
@@ -153,9 +158,10 @@ public class GameTimer extends AnimationTimer {
     	else {
     		this.moveCharacterFlying();
     	}
-        this.movePipe();
+        this.moveObstacle();
     }
 	
+	/*
     // added methods
     void autoSpawn(long currentNanoTime) {
     	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
@@ -195,20 +201,46 @@ public class GameTimer extends AnimationTimer {
 		
 
 	}
-    
+    */
     
     private void movePipe() {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
-			if(pipe.isVisible() && topPipe.isVisible()){
-				topPipe.move();
-				pipe.move();
+			//System.out.println(moveScreenRight);
+			//System.out.println(moveScreenLeft);
+			if(moveScreenRight) {
+				System.out.print("exec");
+				pipe.setVelocityX(SCREEN_MOVE_SPEED);
+				topPipe.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				pipe.setVelocityX(-SCREEN_MOVE_SPEED);
+				topPipe.setVelocityX(-SCREEN_MOVE_SPEED);
 			}
 			else {
-				this.pipes.remove(i);
-				this.topPipes.remove(i);
+
+				pipe.setVelocityX(0);
+				topPipe.setVelocityX(0);
 			}
+			
+			pipe.updatePosition();
+			topPipe.updatePosition();
+		}
+    	
+		for(int i = 0; i < this.blocks.size(); i++){
+			Block block = this.blocks.get(i);
+			if(moveScreenRight) {
+				block.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				block.setVelocityX(-SCREEN_MOVE_SPEED);
+			}
+			else {
+				block.setVelocityX(0);
+			}
+			
+			block.updatePosition();
 		}
 	}
     
@@ -308,19 +340,25 @@ public class GameTimer extends AnimationTimer {
 				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
 			}
 			else {
-			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+				GameTimer.moveScreenLeft = false;
+				GameTimer.moveScreenRight = false;
+				this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
 			}
 		}
 		else if(GameTimer.goRight) {
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
+				GameTimer.moveScreenRight = false;
 				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
 			}
 			else {
-			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+				GameTimer.moveScreenLeft = false;
+				this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
 			}
 		}
 		else {
+			GameTimer.moveScreenRight = false;
+			GameTimer.moveScreenLeft = false;
 			this.character.setVelocityX(0); //stop moving
 		}
 		  
@@ -348,19 +386,25 @@ public class GameTimer extends AnimationTimer {
 				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
 			}
 			else {
-			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+				GameTimer.moveScreenLeft = false;
+				GameTimer.moveScreenRight = false;
+				this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
 			}
 		}
 		else if(GameTimer.goRight) {
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
+				GameTimer.moveScreenRight = false;
 				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
 			}
 			else {
-			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+				GameTimer.moveScreenLeft = false;
+				this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
 			}
 		}
 		else {
+			GameTimer.moveScreenRight = false;
+			GameTimer.moveScreenLeft = false;
 			this.character.setVelocityX(0); //stop moving
 		}
 		
@@ -394,6 +438,20 @@ public class GameTimer extends AnimationTimer {
 			}
 			
 			System.out.println(this.character.getHealth());
+		}
+		
+		for(int i = 0; i < this.blocks.size(); i++){
+			Block block = this.blocks.get(i);
+			
+			block.drawBounds(gc);
+			
+			if(block.collidesWith(this.character)) {
+				this.character.setVelocityX(0);
+				this.character.setVelocityY(0);
+				if(this.character.getPositionY() < block.getPositionY()) {
+					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				}
+			}
 		}
 	}
 	
