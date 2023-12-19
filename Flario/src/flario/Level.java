@@ -99,7 +99,8 @@ public class Level {
 		flyingIntervalCounter += 1;
 	}
 	
-	public static boolean isFinished() {
-		return (currentDistance == finishDistance);
-	}
+//	public static boolean isFinished(double xPos) {
+//		System.out.println(xPos);
+//		return (xPos >= finishDistance);
+//	}
 }

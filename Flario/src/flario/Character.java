@@ -9,6 +9,7 @@ public class Character extends Sprite {
 	private int score;
 	private boolean isGrounded;
 	private int health;
+	public double xPos;
 	
 	private final static Image CHARACTER_IMAGE = new Image("character.png", 64, 64, false, false);
 	public final static double INITIAL_X = 0;
@@ -26,6 +27,7 @@ public class Character extends Sprite {
 		this.score = INIT_SCORE;
 		this.isGrounded = false;
 		this.health = 100;
+		this.xPos = INITIAL_X;
 	}
 
 	String getName(){
@@ -62,4 +64,12 @@ public class Character extends Sprite {
     boolean isGrounded() {
     	return this.isGrounded;
     } 
+    
+//    void updateXPos() {
+//    	this.xPos += CHARACTER_SPEEDX;
+//    }
+//    
+//    double getXPos() {
+//    	return(this.xPos);
+//    }
 }

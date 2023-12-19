@@ -120,13 +120,13 @@ public class Sprite {
 	}
 	
     void updatePosition() {
-    	//if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_HEIGHT-this.height)
-			//this.yPos += this.dy;
+    	if(this.positionY+this.velocityY >= 0 && this.positionY+this.velocityY <= GameStage.WINDOW_HEIGHT-this.height)
+			this.positionY += this.velocityY;
 //    	if(this.positionX+this.velocityX >= 0 && this.positionX+this.velocityX <= GameStage.WINDOW_WIDTH-this.width) {
 //			this.positionX += this.velocityX;
 //    	}
     	this.positionX += this.velocityX;
-    	this.positionY += this.velocityY;
+//    	this.positionY += this.velocityY;
 	}
     
 	public boolean isVisible(){
