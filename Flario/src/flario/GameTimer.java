@@ -47,7 +47,6 @@ public class GameTimer extends AnimationTimer {
 	public final static double SPAWN_DELAY = 1;
     
 	
-//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
 	private static int gameTime;
 	private static int elapsedTime;
 	
@@ -80,6 +79,7 @@ public class GameTimer extends AnimationTimer {
     	// game duration
     	GameTimer.gameTime = 90;
     	GameTimer.elapsedTime = 0;
+    	GameTimer.gameOver = false;
     	
     	this.prepareActionHandlers();
     }
@@ -95,8 +95,10 @@ public class GameTimer extends AnimationTimer {
         this.moveSprites();
         this.drawScore();
         
-        if(!this.character.isAlive()) {
+        if(!this.character.isAlive() || GameTimer.gameOver) {
+        	this.stop();
         	endCountdown();
+        	GameStage.showGameOver(this.character.getScore(), gameTime);
        	}
     }
     
@@ -160,7 +162,7 @@ public class GameTimer extends AnimationTimer {
         this.moveObstacle();
     }
 	
-	/*
+	
     // added methods
     void autoSpawn(long currentNanoTime) {
     	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
@@ -172,7 +174,6 @@ public class GameTimer extends AnimationTimer {
         	this.startSpawn = System.nanoTime();
         }
     }
-    
     
     private void spawnPipes(){
 		int xPos = 1280;
@@ -200,8 +201,7 @@ public class GameTimer extends AnimationTimer {
 		
 
 	}
-    */
-    
+  
     private void movePipe() {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
@@ -216,6 +216,7 @@ public class GameTimer extends AnimationTimer {
 			else if(moveScreenLeft) {
 				pipe.setVelocityX(-SCREEN_MOVE_SPEED);
 				topPipe.setVelocityX(-SCREEN_MOVE_SPEED);
+
 			}
 			else {
 
@@ -238,11 +239,9 @@ public class GameTimer extends AnimationTimer {
 			else {
 				block.setVelocityX(0);
 			}
-			
 			block.updatePosition();
 		}
 	}
-    
     
     /*
      * Catches the left and right key presses for the guardian's movement
@@ -272,6 +271,7 @@ public class GameTimer extends AnimationTimer {
                 	GameTimer.goDown = true;
                 	//added as of dec 18
                 	//tentative mini game trigger (must be triggered by stack overflow buff)
+                	
                 	MiniWindow minigame = new MiniWindow(); //launch mini game
                 	minigame.start();
                 	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
@@ -279,8 +279,6 @@ public class GameTimer extends AnimationTimer {
                 
                 if(code.equals("P")) {
                 	GameTimer.gameOver = true;
-                	GameTimer.gameTime = 1; // adds a gametime setter
-                	GameTimer.elapsedTime = 89;
                 }
                 
             }
@@ -328,7 +326,6 @@ public class GameTimer extends AnimationTimer {
 		return this;
 	}
 	
-	// new method
 	// added methods
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
@@ -432,7 +429,35 @@ public class GameTimer extends AnimationTimer {
 				this.character.setVelocityY(0);
 			}
 			
-			System.out.println(this.character.getHealth());
+//			System.out.println(this.character.getHealth());
+		}
+		
+		for(int i = 0; i < this.blocks.size(); i++){
+			Block block = this.blocks.get(i);
+			
+			block.drawBounds(gc);
+			
+			if(block.collidesWith(this.character)) {
+				this.character.setVelocityX(0);
+				this.character.setVelocityY(0);
+				if(this.character.getPositionY() < block.getPositionY()) {
+					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				}
+			}
+		}
+		
+		for(int i = 0; i < this.blocks.size(); i++){
+			Block block = this.blocks.get(i);
+			
+			block.drawBounds(gc);
+			
+			if(block.collidesWith(this.character)) {
+				this.character.setVelocityX(0);
+				this.character.setVelocityY(0);
+				if(this.character.getPositionY() < block.getPositionY()) {
+					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				}
+			}
 		}
 		
 		for(int i = 0; i < this.blocks.size(); i++){
@@ -471,10 +496,7 @@ public class GameTimer extends AnimationTimer {
 	
 	private void endCountdown() {
 		if (timeline != null) {
-	        timeline.stop();
-	        GameStage.playgameover();
-            this.stop();
-            this.drawGameOver();
+            timeline.stop();
 	    }
 	}
 
@@ -522,17 +544,6 @@ public class GameTimer extends AnimationTimer {
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Score: " + computeScore(), 500, 30);
-	}
-	
-	private void drawGameOver() {
-		this.gc.setFont(GameStage.FONT_8BIT);
-	    this.gc.setFill(Color.WHITE);
-	    this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
-	    
-	    Button btn = new Button("Retry");
-	    btn.setLayoutX(GameStage.WINDOW_WIDTH/2); // Set the X position of the button
-	    btn.setLayoutY(GameStage.WINDOW_HEIGHT/2); // Set the Y position of the button
-//		GameStage.setGameOver(this.character.getScore(), gameTime);
 	}
 	
 }

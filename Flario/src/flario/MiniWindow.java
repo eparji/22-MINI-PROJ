@@ -69,10 +69,14 @@ public class MiniWindow extends AnimationTimer{
 		this.stage.setScene(this.scene);
 		this.addComponents();
 		this.scene.getRoot().requestFocus();
+		GameStage.playminigamemusic();
 		this.stage.show();
 		PauseTransition delay = new PauseTransition(Duration.seconds(5));
 		delay.play();
-		delay.setOnFinished(event -> this.stage.close());
+		delay.setOnFinished(event -> {
+			this.stage.close();
+			GameStage.playgamemusic();
+		});
 	}
 	
 	private void setHandler() {
