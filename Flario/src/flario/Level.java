@@ -25,7 +25,7 @@ public class Level {
 	private final static int BUFF_RARITY = 10; // must be at least 4
 	
 	public Level() {
-		this.finishDistance = LEVEL_LENGTH;
+		this.finishDistance = LEVEL_LENGTH-720;
 		this.groundIntervalCounter = 0;
 		this.flyingIntervalCounter = 0;
     		this.pipes = new ArrayList<Pipe>();
