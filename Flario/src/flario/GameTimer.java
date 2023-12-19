@@ -548,8 +548,8 @@ public class GameTimer extends AnimationTimer {
 			// chara collided with pipe
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
 				currentTime = System.currentTimeMillis();
-				if(currentTime - lastDamageTime >= 1000) { // 1000 milliseconds = 1 second
-			        this.character.setHealth(this.character.getHealth() - 25);
+				if(currentTime - lastDamageTime >= 750) { // 750 milliseconds = 0.75 seconds
+			        this.character.setHealth(this.character.getHealth() - 10);
 			        System.out.println("Player Health is: " + this.character.getHealth());
 			        lastDamageTime = currentTime;
 			    }
@@ -730,7 +730,10 @@ public class GameTimer extends AnimationTimer {
 		this.gc.fillText("Remaining Time: " + computeTime(), 20, 30);
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
-		this.gc.fillText("Score: " + computeScore(), 500, 30);
+		this.gc.fillText("Score: " + computeScore(), 475, 30);
+		this.gc.setFont(GameStage.FONT_8BIT);
+		this.gc.setFill(Color.YELLOW);
+		this.gc.fillText("Health: " + this.character.getHealth(), 20, 60);
 	}
 	
 }

@@ -40,7 +40,7 @@ public class Character extends Sprite {
 		this.isAlive = true;
 		this.score = INIT_SCORE;
 		this.isGrounded = false;
-		this.health = 1000;
+		this.health = 100;
 		this.xPos = INITIAL_X;
 		this.rightImage = RIGHT_CHAR_IMG; 
 		this.setImage(rightImage);
