@@ -1,9 +1,7 @@
 package flario;
 
 import java.io.InputStream;
-
-import flario.GameStage;
-//import flario.Game;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,17 +21,22 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GameStage {
-	private Stage stage;
-	private Scene splashScene;		// the splash scene
-	private Scene gameScene;		// the game scene
+	private static Stage stage;
+	private static Scene splashScene;		// the splash scene
+	private static Scene gameScene;		// the game scene
 	private Scene aboutScene;       // the scene showing devs and references
 	private Scene instScene;        // the scene showing the how to's of the game
+	private static Scene gameoverScene;
+	
 	private Group root;
-	private Canvas canvas;			// the canvas where the animation happens
+	private static Canvas canvas;			// the canvas where the animation happens
+	
 	private static MediaPlayer bgplayer;
 	private static MediaPlayer gameplayer;
 	private static MediaPlayer minigameplayer;
@@ -41,8 +44,6 @@ public class GameStage {
 	
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
-//	public final static int ABOUT_WINDOW_WIDTH = 1920;
-//	public final static int ABOUT_WINDOW_HEIGHT = 1080;
 	
     private final static String BUTTONSTYLE = "-fx-background-color:transparent;"
     										 + "-fx-padding:0;"
@@ -64,29 +65,32 @@ public class GameStage {
 
     
 	public GameStage(){
-		this.canvas = new Canvas( GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT );
+		canvas = new Canvas( GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT );
 		this.root = new Group();
-        this.root.getChildren().add( this.canvas );
-        this.gameScene = new Scene( root );
+        this.root.getChildren().add( canvas );
+        gameScene = new Scene( root );
 	}
 	
 	public void setStage(Stage stage) {
-		this.stage = stage;
+		GameStage.stage = stage;
 		stage.setTitle( "FlaRio" );
         
 		this.initSplash(stage);			// initializes the Splash Screen with the New Game button
 		this.initAbout(stage);          // initializes the About Screen with return to main menu button
-		this.initInst(stage);
+		this.initInst(stage);           // initializes Instruction scene
 		
-		stage.setScene( this.splashScene );
+		stage.setScene( splashScene );
         stage.setResizable(false);
         playbgmusic();                  // plays background music 
 		stage.show();
 	}
 	
 	// method that plays background music when the stage is called
-	void playbgmusic() {
-		if(gameplayer != null) gameplayer.stop();
+	static void playbgmusic() {
+		if(gameplayer != null) {
+			gameplayer.stop();
+			gameplayer = null;
+		}
 		
 	    bgplayer = new MediaPlayer(GameStage.BG_MUSIC);
 	    bgplayer.setVolume(0.22);
@@ -97,8 +101,14 @@ public class GameStage {
 	// method that plays the game music when play button gets clicked
 	static void playgamemusic()
 	{
-		if(bgplayer != null) bgplayer.stop();
-		if(minigameplayer != null) minigameplayer.stop();
+		if(bgplayer != null) {
+			bgplayer.stop();
+			bgplayer = null;
+		}
+		if(minigameplayer != null) {
+			minigameplayer.stop();
+			minigameplayer = null;
+		}
 		
 		gameplayer = new MediaPlayer(GameStage.GAME_MUSIC);
 		gameplayer.setVolume(0.18);
@@ -108,7 +118,10 @@ public class GameStage {
 	
 	static void playminigamemusic()
 	{
-		if(gameplayer != null) gameplayer.stop();
+		if(gameplayer != null) {
+			gameplayer.stop();
+			gameplayer = null;
+		}
 		
 		minigameplayer = new MediaPlayer(GameStage.MINIGAME);
 		minigameplayer.setVolume(0.20);
@@ -119,7 +132,10 @@ public class GameStage {
 	// method that plays the gameover music when timer runs out
 	static void playgameover()
 	{
-		if(gameplayer != null) gameplayer.stop();
+		if(gameplayer != null) {
+			gameplayer.stop();
+			gameplayer = null;
+		}
 		
 		gameover = new MediaPlayer(GameStage.GAMEOVER);
 		gameover.setVolume(0.18);
@@ -130,8 +146,8 @@ public class GameStage {
 	
 	private void initSplash(Stage stage) {
 		StackPane root = new StackPane();
-        root.getChildren().addAll(this.createCanvas("mainmenu-bg.png"),this.createVBox());
-        this.splashScene = new Scene(root);
+        root.getChildren().addAll(GameStage.createCanvas("mainmenu-bg.png"),this.createVBox());
+        GameStage.splashScene = new Scene(root);
 	}
 	
 	// creates an about scene containing information about the devs and the references
@@ -194,8 +210,57 @@ public class GameStage {
 	    
 	    return(root);
 	}
+	
+	private static void initGameOver(int score, int time) {
+	    Pane gameover = new Pane();
+	    VBox texts = new VBox();
+	    
+	    // Create Text objects for score and time
+	    Text scoreText = new Text("Score: " + score);
+	    Text timeText = new Text("\nTime Remaining");
+	    Text seconds = new Text(time + " seconds");
 
-	private Canvas createCanvas(String filepath) {
+	    // Style the Text objects if needed
+	    scoreText.setFont(GameStage.FONT_8BIT);
+	    timeText.setFont(GameStage.FONT_8BIT);
+	    seconds.setFont(GameStage.FONT_8BIT);
+	    
+	    texts.setAlignment(Pos.CENTER); // set alignment of vbox to center
+	    texts.getChildren().addAll(scoreText, timeText, seconds);
+	    
+	    texts.layoutXProperty().bind(gameover.widthProperty().subtract(texts.prefWidth(-1)).divide(2));
+	    texts.layoutYProperty().bind(gameover.heightProperty().subtract(texts.prefHeight(-1)).divide(2));
+	    
+	    VBox buttons = new VBox();
+	    
+	    Image tryI = new Image("tryagain-btn.png", 300, 75, true, true);
+	    ImageView tryV = new ImageView(tryI);
+
+	    Button trybtn = new Button();
+	    trybtn.setGraphic(tryV);
+	    setButtonActionsAndStyles(trybtn, event -> setGame(stage), BUTTONSTYLE);
+
+	    Image ret = new Image("return-main-btn.png", 300, 75, true, true);
+	    ImageView retV = new ImageView(ret);
+
+	    Button retmain = new Button();
+	    retmain.setGraphic(retV);
+	    setButtonActionsAndStyles(retmain, event -> showMenu(stage), BUTTONSTYLE);
+	    
+	    buttons.getChildren().addAll(trybtn, retmain);
+	    
+	    gameover.getChildren().addAll(createCanvas("gameover.png"), texts, buttons);
+	    
+	    Platform.runLater(() -> {
+	        // Position the VBox at the bottom center of the Pane
+	        buttons.setLayoutX((gameover.getWidth() - buttons.getWidth()) / 2);
+	        buttons.setLayoutY(gameover.getHeight() - buttons.getHeight() - 50); // subtract more to move it up
+	    });
+	    
+	    gameoverScene = new Scene(gameover);
+	}
+	
+	private static Canvas createCanvas(String filepath) {
     	Canvas canvas = new Canvas(GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
@@ -204,16 +269,17 @@ public class GameStage {
         return canvas;
     }
 	
-	void setGame(Stage stage) {
-        stage.setScene(this.gameScene);	
-        GraphicsContext gc = this.canvas.getGraphicsContext2D();	// we will pass this gc to be able to draw on this Game's canvas
+	static void setGame(Stage stage) {
+        stage.setScene(gameScene);	
+        GraphicsContext gc = canvas.getGraphicsContext2D();	// we will pass this gc to be able to draw on this Game's canvas
         GameTimer gameTimer = new GameTimer(gameScene, gc);
         playgamemusic();
         gameTimer.start();			// this internally calls the handle() method of our GameTimer
 	}	
 	
-	private void showMenu(Stage stage) {
-		stage.setScene(this.splashScene);
+	static void showMenu(Stage stage) {
+		if(bgplayer == null) playbgmusic();
+		stage.setScene(splashScene);
 	}
 	
 	void devInfo(Stage stage) {
@@ -222,6 +288,12 @@ public class GameStage {
 	
 	void gameInst(Stage stage) {
 		stage.setScene(this.instScene);
+	}
+	
+	static void showGameOver(int score, int time) {
+		playgameover();
+		initGameOver(score, time);       // initializes gameover scene
+		stage.setScene(gameoverScene);
 	}
 	
 	void endGame() {
@@ -267,7 +339,7 @@ public class GameStage {
         return vbox;
     }
     
-    private void setButtonActionsAndStyles(Button button, EventHandler<ActionEvent> actionEvent, String buttonStyle) {
+    private static void setButtonActionsAndStyles(Button button, EventHandler<ActionEvent> actionEvent, String buttonStyle) {
     	button.setStyle(buttonStyle);
     	button.setOnAction(actionEvent);
         button.setOnMouseEntered(event -> button.setStyle(buttonStyle + "-fx-opacity: 0.8;"));

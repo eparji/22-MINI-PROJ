@@ -44,7 +44,6 @@ public class GameTimer extends AnimationTimer {
 	public final static double SPAWN_DELAY = 1;
     
 	
-//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
 	private static int gameTime;
 	private static int elapsedTime;
 	
@@ -79,6 +78,7 @@ public class GameTimer extends AnimationTimer {
     	// game duration
     	GameTimer.gameTime = 90;
     	GameTimer.elapsedTime = 0;
+    	GameTimer.gameOver = false;
     	
     	this.prepareActionHandlers();
     }
@@ -94,8 +94,10 @@ public class GameTimer extends AnimationTimer {
         this.moveSprites();
         this.drawScore();
         
-        if(!this.character.isAlive()) {
+        if(!this.character.isAlive() || GameTimer.gameOver) {
+        	this.stop();
         	endCountdown();
+        	GameStage.showGameOver(this.character.getScore(), gameTime);
        	}
     }
     
@@ -167,7 +169,6 @@ public class GameTimer extends AnimationTimer {
         }
     }
     
-    
     private void spawnPipes(){
 		int xPos = 1280;
 		Random r = new Random();
@@ -195,7 +196,6 @@ public class GameTimer extends AnimationTimer {
 
 	}
     
-    
     private void movePipe() {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
@@ -210,7 +210,6 @@ public class GameTimer extends AnimationTimer {
 			}
 		}
 	}
-    
     
     /*
      * Catches the left and right key presses for the guardian's movement
@@ -248,8 +247,6 @@ public class GameTimer extends AnimationTimer {
                 
                 if(code.equals("P")) {
                 	GameTimer.gameOver = true;
-                	GameTimer.gameTime = 1; // adds a gametime setter
-                	GameTimer.elapsedTime = 89;
                 }
                 
             }
@@ -413,10 +410,7 @@ public class GameTimer extends AnimationTimer {
 	
 	private void endCountdown() {
 		if (timeline != null) {
-	        timeline.stop();
-	        GameStage.playgameover();
-            this.stop();
-            this.drawGameOver();
+            timeline.stop();
 	    }
 	}
 
@@ -466,15 +460,17 @@ public class GameTimer extends AnimationTimer {
 		this.gc.fillText("Score: " + computeScore(), 500, 30);
 	}
 	
-	private void drawGameOver() {
-		this.gc.setFont(GameStage.FONT_8BIT);
-	    this.gc.setFill(Color.WHITE);
-	    this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
-	    
-	    Button btn = new Button("Retry");
-	    btn.setLayoutX(GameStage.WINDOW_WIDTH/2); // Set the X position of the button
-	    btn.setLayoutY(GameStage.WINDOW_HEIGHT/2); // Set the Y position of the button
-//		GameStage.setGameOver(this.character.getScore(), gameTime);
-	}
+//	private void drawGameOver() {
+//		this.stop();
+//		GameTimer.gameOver = true;
+////		this.gc.setFont(GameStage.FONT_8BIT);
+////	    this.gc.setFill(Color.WHITE);
+////	    this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
+////	    
+////	    Button btn = new Button("Retry");
+////	    btn.setLayoutX(GameStage.WINDOW_WIDTH/2); // Set the X position of the button
+////	    btn.setLayoutY(GameStage.WINDOW_HEIGHT/2); // Set the Y position of the button
+//		GameStage.showGameOver(this.character.getScore(), gameTime);
+//	}
 	
 }
