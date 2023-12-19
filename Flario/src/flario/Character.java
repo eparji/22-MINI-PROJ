@@ -76,10 +76,10 @@ public class Character extends Sprite {
     
     // methods to change the character's sprite
     public void faceRight() {
-        imageView.setImage(RIGHT_CHAR_IMG);
+        this.setImage(rightImage);
     }
 
     public void faceLeft() {
-        imageView.setImage(LEFT_CHAR_IMG);
+        this.setImage(leftImage);
     }
 }
