@@ -23,13 +23,13 @@ public class TimeIncrement extends Button {
 	private final ArrayList<Image> images = new ArrayList<Image>(Arrays.asList(UNO_IMAGE,DOS_IMAGE,TRES_IMAGE,SINGKO_IMAGE));
 	final static private ArrayList<Integer> increment = new ArrayList<Integer> (Arrays.asList(UNO,DOS,TRES,SINGKO));
 
+	// TimeIncrement button object constructor
 	public TimeIncrement(double x,double y, int type) {
-		// TODO Auto-generated constructor stub
 		this.type = type;
 		this.imgView = new ImageView(this.images.get(type));
 		this.setGraphic(this.imgView);
 		this.setPos(x, y);
-		this.setPadding(Insets.EMPTY);		
+		this.setPadding(Insets.EMPTY); // no margins
 	}
 
 	public int getIncrement() {
