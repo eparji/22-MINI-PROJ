@@ -42,13 +42,9 @@ public class GameTimer extends AnimationTimer {
 	private double backgroundX;
 	private Image background = new Image( "background.png", 1280, 720, false, false);
 
-//	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
-	
-	// added
-	private Image background2 = new Image("plainsky.png", 1280, 720, false, false);
-	private long startSpawn;
 	public final static double SPAWN_DELAY = 1;
-    
+    private long lastDamageTime;
+	private long currentTime;
 	
 	private static int gameTime;
 	private static int elapsedTime;
@@ -74,7 +70,7 @@ public class GameTimer extends AnimationTimer {
     	this.gc = gc;
     	this.scene = scene;    	
     	this.character = new Character("Mario");
-    	//this.startSpawn = this.startShoot = System.nanoTime();
+
     	// obstacle generation done through level class
     	this.level = new Level();
     	this.pipes = this.level.pipes;
@@ -545,11 +541,13 @@ public class GameTimer extends AnimationTimer {
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
 			
-			//pipe.drawBounds(gc);
-			//topPipe.drawBounds(gc);
-			
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
-				this.character.setHealth(this.character.getHealth()-25);
+				currentTime = System.currentTimeMillis();
+				if(currentTime - lastDamageTime >= 1000) { // 1000 milliseconds = 1 second
+			        this.character.setHealth(this.character.getHealth() - 25);
+			        System.out.println("Player Health is: " + this.character.getHealth());
+			        lastDamageTime = currentTime;
+			    }
 				this.character.setVelocityX(0);
 				this.character.setVelocityY(0);
 			}
