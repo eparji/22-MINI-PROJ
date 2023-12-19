@@ -69,7 +69,6 @@ public class GameTimer extends AnimationTimer {
     	this.scene = scene;    	
     	this.character = new Character("Mario");
     	//this.startSpawn = this.startShoot = System.nanoTime();
-    	
     	// obstacle generation done through level class
     	this.level = new Level();
     	this.pipes = this.level.pipes;
@@ -133,8 +132,6 @@ public class GameTimer extends AnimationTimer {
     	// draw guardian
         this.character.render(this.gc);
         
-        this.pipe.render(this.gc);
-       
         // added
         // draw Sprites in ArrayLists
         for (Pipe pipe : this.pipes) {
@@ -202,7 +199,7 @@ public class GameTimer extends AnimationTimer {
 
 	}
   
-    private void movePipe() {
+    private void moveObstacle() {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);

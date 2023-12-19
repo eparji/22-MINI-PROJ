@@ -9,7 +9,7 @@ public class Block extends Sprite{
     private final static double BLOCK_WIDTH = 64;
     private final static double BLOCK_HEIGHT = 64;
     
-    private final static Image BLOCK_IMAGE = new Image(Pipe.class.getResource("/images/block.png").toString(), BLOCK_WIDTH, BLOCK_HEIGHT, false, false);
+    private final static Image BLOCK_IMAGE = new Image(Pipe.class.getResource("/block.png").toString(), BLOCK_WIDTH, BLOCK_HEIGHT, false, false);
     
     
     public Block(double positionX, double positionY) {

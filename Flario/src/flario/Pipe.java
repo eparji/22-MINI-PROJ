@@ -20,7 +20,7 @@ public class Pipe extends Sprite{
     public Pipe(double positionX, double positionY, boolean isFaceUp) {
 
 	// Uses sprite constructor to create pipe, Uses top or bottom pipe image based on isFaceUpValue
-    	super(positionX, positionY, Pipe.PIPE_WIDTH, Pipe.PIPE_HEIGHT, isFaceUp? BOTTOM_PIPE_IMAGE: TOP_PIPE_IMAGE)
+    	super(positionX, positionY, Pipe.PIPE_WIDTH, Pipe.PIPE_HEIGHT, isFaceUp? BOTTOM_PIPE_IMAGE: TOP_PIPE_IMAGE);
     }
 
 	// will remove soon in favor of upfatePositionXY in superclass Sprite
