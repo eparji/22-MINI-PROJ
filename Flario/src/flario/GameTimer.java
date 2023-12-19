@@ -16,7 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class GameTimer extends AnimationTimer {
-	private Pipe pipe;
 	private GraphicsContext gc;
 	private Character character;
 	private Scene scene;
@@ -25,6 +24,7 @@ public class GameTimer extends AnimationTimer {
 	// added
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean moveScreenLeft, moveScreenRight;
+	private static boolean isTouchingGround;
 	
 	private ArrayList<Pipe> pipes;
 	private ArrayList<Pipe> topPipes;
@@ -52,6 +52,7 @@ public class GameTimer extends AnimationTimer {
 	public final static int BACKGROUND_SPEED = 1;
 	public final static double TIME_SCORE_MULT = 0.5;
 	public final static int SCREEN_MOVE_SPEED = 2;
+	public final static int COLLISION_BUFFER = 16;
 	
 	// added
 	public final static int WIDTH_PER_PIPE = 80;
@@ -155,46 +156,6 @@ public class GameTimer extends AnimationTimer {
     	}
         this.moveObstacle();
     }
-	
-	
-    // added methods
-    void autoSpawn(long currentNanoTime) {
-    	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
-    	
-    	
-        if(spawnElapsedTime > GameTimer.SPAWN_DELAY) {
-        	this.spawnPipes();
-        	this.character.setScore(this.character.getScore()+1); //test score
-        	this.startSpawn = System.nanoTime();
-        }
-    }
-    
-    private void spawnPipes(){
-		int xPos = 1280;
-		Random r = new Random();
-		
-		int middle = 250;
-		
-		int interval = xPos - PIPE_SPAWN_INTERVAL; //spawning interval
-		
-		int top = r.nextInt(middle); //random number for the basis of bottom and top pipe position
-		int bottomPos = (400 + top); //position of bottom pipe
-		int topPos = top - 400; //correcting the position of top pipe
-		
-		//312 and 0
-		if(this.pipes.size() == 0) {//first set of pipes
-			this.pipes.add(new Pipe(xPos, bottomPos, true));
-			this.topPipes.add(new Pipe(xPos, topPos, false));
-		}else {//following pipes
-			int size = this.pipes.size();
-			if(this.pipes.get(size-1).positionX <= interval) {//interval for spawning the next pipe
-				this.pipes.add(new Pipe(xPos, bottomPos, true));
-				this.topPipes.add(new Pipe(xPos, topPos, false));
-			} 		
-		}
-		
-
-	}
   
     private void moveObstacle() {
 		for(int i = 0; i < this.pipes.size(); i++){
@@ -351,18 +312,22 @@ public class GameTimer extends AnimationTimer {
 			this.character.setVelocityX(0); //stop moving
 		}
 		  
-		  if(GameTimer.goUp && this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
-			  this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
-		  }else {//go down
-			  this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
+		if(this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
+			GameTimer.isTouchingGround = true;
+		}
+		
+		if(GameTimer.goUp && isTouchingGround) {
+			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+			GameTimer.isTouchingGround = false;
+		}else {//go down
+			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
 			  
-			  if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
-				  this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
-				  this.character.setVelocityY(0);
-			  }
-			  GameTimer.goUp = false;
-			  
-		  }
+			if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
+				this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
+				this.character.setVelocityY(0);
+			}
+			GameTimer.goUp = false;	  
+		}
 		  
 		  this.character.updatePosition();
 	}
@@ -434,40 +399,33 @@ public class GameTimer extends AnimationTimer {
 			block.drawBounds(gc);
 			
 			if(block.collidesWith(this.character)) {
-				this.character.setVelocityX(0);
-				this.character.setVelocityY(0);
-				if(this.character.getPositionY() < block.getPositionY()) {
+
+				System.out.println(this.character.getPositionX() +" "+ this.character.getPositionY() +" "+ block.getPositionX() +" "+ block.getPositionY());
+				
+				if(this.character.getPositionY() < block.getPositionY() - this.character.getHeight() + COLLISION_BUFFER) {
+					this.character.setVelocityY(0);
+					System.out.println("trigger1");
 					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+					GameTimer.isTouchingGround = true;
 				}
-			}
-		}
-		
-		for(int i = 0; i < this.blocks.size(); i++){
-			Block block = this.blocks.get(i);
-			
-			block.drawBounds(gc);
-			
-			if(block.collidesWith(this.character)) {
-				this.character.setVelocityX(0);
-				this.character.setVelocityY(0);
-				if(this.character.getPositionY() < block.getPositionY()) {
-					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				
+				if(this.character.getPositionY() > block.getPositionY() + this.character.getHeight() - COLLISION_BUFFER) {
+					this.character.setVelocityY(0);
+					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY() + this.character.getHeight());
 				}
-			}
-		}
-		
-		for(int i = 0; i < this.blocks.size(); i++){
-			Block block = this.blocks.get(i);
-			
-			block.drawBounds(gc);
-			
-			if(block.collidesWith(this.character)) {
-				this.character.setVelocityX(0);
-				this.character.setVelocityY(0);
-				if(this.character.getPositionY() < block.getPositionY()) {
-					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				
+				if(this.character.getPositionX() < block.getPositionX() - this.character.getWidth() + COLLISION_BUFFER ) {
+					GameTimer.goRight = false;
+					System.out.println("trigger3");
+					this.character.setPositionXY(block.getPositionX() - this.character.getWidth(), this.character.getPositionY());
 				}
-			}
+				
+				if(this.character.getPositionX() > block.getPositionX() + this.character.getWidth() - COLLISION_BUFFER) {
+					GameTimer.goLeft = false;
+					System.out.println("trigger4");
+					this.character.setPositionXY(block.getPositionX()+this.character.getWidth(), this.character.getPositionY());
+				}
+			
 		}
 	}
 	
