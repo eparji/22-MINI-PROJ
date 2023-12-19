@@ -89,4 +89,10 @@ public class Character extends Sprite {
     public void faceLeft(double height, double width) {
         this.setImage(new Image("left-char.png", width, height, false, false));
     }
+
+	
+    public void setGrounded(boolean bool) {
+		this.isGrounded = bool;
+		
+	}
 }

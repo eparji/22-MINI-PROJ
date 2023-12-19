@@ -299,90 +299,88 @@ public class GameTimer extends AnimationTimer {
 	void checkBuff(long currentNanoTime) {
 		
 		this.gc.setFill(Color.BLACK);
+		boolean newBuff = true;
 		
     	//random buff every 5 pipes
-			if(incentiveBuff == true) {//spawn incentive buff
-				Random r = new Random();
-				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
-				
-				this.alreadyBuffed = true;
-				this.gc.fillText("Gained incentive buff!", 600, 100);
-				
-				int add = r.nextInt(1, 5);
-				
-				if(buffElapsedTime > BUFF_DURATION) {
-					this.incentiveBuff = false;
-					this.alreadyBuffed = false;
-					this.buffTime = System.nanoTime();
-					this.character.setHealth(this.character.getHealth() + add);
-					this.gc.fillText("Gained +" + add + "health!", 600, 100);
-				}
-			}
+		if(incentiveBuff == true) {//spawn incentive buff
+			Random r = new Random();
+			double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
 			
-			else if(moduleBuff == true){//spawn module buff
-				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
-				
-				if(this.alreadyBuffed == false) {
-					this.character.width = this.character.width / 1.6;
-					this.character.width = this.character.height / 1.6;
-					
-					this.alreadyBuffed = true;
-					this.gc.fillText("Gained module buff!", 600, 60);
-				}
-				
-				if(buffElapsedTime > BUFF_DURATION) {
-					
-					this.character.width = this.character.width * 1.6;
-					this.character.height = this.character.height * 1.6;
-					this.gc.fillText("Module buff is gone!", 600, 100);
-					this.moduleBuff = false;
-					this.alreadyBuffed = false;
-					this.buffTime = System.nanoTime();
-				}
-				
-				if(goLeft) this.character.faceLeft(this.character.width, this.character.width);
-				if(goRight) this.character.faceRight(this.character.width, this.character.width);
-				this.character.loadImage(this.character.image);
-			}
+			this.alreadyBuffed = true;
+			this.gc.fillText("Gained incentive buff!", 600, 100);
 			
-			else if(stackBuff == true){//spawn minigame buff
-				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
-				//start minigame
-				
-				this.alreadyBuffed = true;
-				this.gc.fillText("Gained stack overflow buff!", 600, 100);
-				
-    			MiniWindow minigame = new MiniWindow(); //launch mini game
-    			minigame.start();
-    			GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
-				
-				this.stackBuff = false;
+			int add = r.nextInt(1, 5);
+			
+			if(buffElapsedTime > BUFF_DURATION) {
+				this.incentiveBuff = false;
 				this.alreadyBuffed = false;
-				this.gc.fillText("Stack Overflow buff is gone!", 600, 100);
+				this.buffTime = System.nanoTime();
+				this.character.setHealth(this.character.getHealth() + add);
+				this.gc.fillText("Gained +" + add + "health!", 600, 100);
 			}
-			else if(changeMode == true) {//change mode
-				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;
+		}
+		
+		else if(moduleBuff == true){//spawn module buff
+			double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
+			
+			if(this.alreadyBuffed == false) {
+				this.character.width = this.character.width / 1.6;
+				this.character.width = this.character.height / 1.6;
 				
-				if(buffElapsedTime >= 1 && buffElapsedTime < 2) {
-					this.changeCount++;
-					
-					if(this.changeCount == 1) {
-						this.alreadyBuffed = true;
-						this.gc.fillText("Change mode!", 600, 100);
-					}
-					
-					
-				}
-				
-				if(buffElapsedTime >= 3 && buffElapsedTime < 4) {
-					if(this.changeCount == 2) {
-						this.alreadyBuffed = false;
-						this.gc.fillText("Back to ground!", 600, 100);
-						this.changeCount = 0;
-					}
-				}
+				this.alreadyBuffed = true;
+				this.gc.fillText("Gained module buff!", 600, 60);
 			}
-    	}
+			
+			if(buffElapsedTime > BUFF_DURATION) {
+				
+				this.character.width = this.character.width * 1.6;
+				this.character.height = this.character.height * 1.6;
+				this.gc.fillText("Module buff is gone!", 600, 100);
+				this.moduleBuff = false;
+				this.alreadyBuffed = false;
+				this.buffTime = System.nanoTime();
+			}
+			
+			if(goLeft) this.character.faceLeft(this.character.width, this.character.width);
+			if(goRight) this.character.faceRight(this.character.width, this.character.width);
+			this.character.loadImage(this.character.image);
+		}
+		
+		else if(stackBuff == true){//spawn minigame buff
+			double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
+			//start minigame
+			
+			this.alreadyBuffed = true;
+			this.gc.fillText("Gained stack overflow buff!", 600, 100);
+			
+			MiniWindow minigame = new MiniWindow(); //launch mini game
+			minigame.start();
+			GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
+			
+			this.stackBuff = false;
+			this.alreadyBuffed = false;
+			this.gc.fillText("Stack Overflow buff is gone!", 600, 100);
+		}
+		else if(changeMode == true) {//change mode
+			
+			this.character.setGrounded(!this.character.isGrounded());
+			changeMode = false;
+			
+			if(this.character.isGrounded()) {
+				this.alreadyBuffed = false;
+				this.gc.fillText("Back to ground!", 600, 100);
+				this.changeCount = 0;
+			}
+			else {
+				this.alreadyBuffed = true;
+				this.gc.fillText("Change mode!", 600, 100);
+			}
+			
+			
+		}
+		
+		newBuff = false;
+    }
 
 	// handler for key events
 	private void prepareActionHandlers() {
