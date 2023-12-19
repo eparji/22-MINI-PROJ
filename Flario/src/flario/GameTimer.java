@@ -30,12 +30,11 @@ public class GameTimer extends AnimationTimer {
 	private ArrayList<Pipe> topPipes; //array list of upper pipes
 	
 	private static boolean gameOver;
-	
+	private Timeline timeline;
+
 	private double backgroundX;
-//<<<<<<< HEAD
 	private Image background = new Image( "background.png", 1280, 720, false, false);
 
-//=======
 //	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
 	
 	// added
@@ -96,8 +95,7 @@ public class GameTimer extends AnimationTimer {
         this.drawScore();
         
         if(!this.character.isAlive()) {
-        	this.stop();				
-        	this.drawGameOver();		
+        	endCountdown();
        	}
     }
     
@@ -285,7 +283,6 @@ public class GameTimer extends AnimationTimer {
         });
     }
 	
-//<<<<<<< HEAD
 	//time increment new method - added as of dec 18
 	public static void setGameTime(int time) { //adding collected time to game time
 		GameTimer.gameTime += time;
@@ -304,7 +301,6 @@ public class GameTimer extends AnimationTimer {
 	}
 	
 	// new method
-//=======
 	// added methods
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
@@ -345,7 +341,6 @@ public class GameTimer extends AnimationTimer {
 		  this.character.updatePosition();
 	}
 	
-	
 	private void moveCharacterFlying() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -381,7 +376,6 @@ public class GameTimer extends AnimationTimer {
 		this.character.updatePosition();
 	}
 	
-	
 	private void handleCollision() {
 		this.character.drawBounds(gc);
 		
@@ -402,11 +396,8 @@ public class GameTimer extends AnimationTimer {
 		}
 	}
 	
-//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
 	// implements a counting down mechanism
 	private void startCountdown() {
-	    // Create an array of Timeline with a single element
-	    Timeline[] timeline = new Timeline[1];
 
 	    // Create a key frame that updates the remaining time every second
 	    KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
@@ -414,17 +405,23 @@ public class GameTimer extends AnimationTimer {
 	        elapsedTime++;
 	        printScore();
 	        if (gameTime <= 0) {
-	            timeline[0].stop(); // Stop the timeline
-	            GameStage.playgameover();
-	            this.stop();
-	            this.drawGameOver();
+	            endCountdown();
 	        }
 	    });
 
 	    // Create a timeline with the key frame
-	    timeline[0] = new Timeline(keyFrame);
-	    timeline[0].setCycleCount(gameTime);
-	    timeline[0].play();
+	    timeline = new Timeline(keyFrame);
+	    timeline.setCycleCount(gameTime);
+	    timeline.play();
+	}
+	
+	private void endCountdown() {
+		if (timeline != null) {
+	        timeline.stop();
+	        GameStage.playgameover();
+            this.stop();
+            this.drawGameOver();
+	    }
 	}
 	
 	/*
