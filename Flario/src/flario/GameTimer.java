@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -31,14 +32,19 @@ public class GameTimer extends AnimationTimer {
 	private static boolean gameOver;
 	
 	private double backgroundX;
-	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
+//<<<<<<< HEAD
+	private Image background = new Image( "background.png", 1280, 720, false, false);
+
+//=======
+//	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
 	
 	// added
-	private Image background2 = new Image(GameTimer.class.getResource("/images/plainsky.png").toString(), 1280, 720, false, false);
+	private Image background2 = new Image("plainsky.png", 1280, 720, false, false);
 	private long startSpawn;
 	public final static double SPAWN_DELAY = 1;
     
 	
+//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
 	private Pipe pipe;
 	private static int gameTime;
 	private static int elapsedTime;
@@ -63,13 +69,13 @@ public class GameTimer extends AnimationTimer {
     	//this.startSpawn = this.startShoot = System.nanoTime();
     	
     	// test pipe
-    	this.pipe = new Pipe(640, GROUND_POSITION - 192, true, 192);
+    	this.pipe = new Pipe(640, GROUND_POSITION - 192, true);
     	
     	// added
-//    	this.pipes = new ArrayList<Pipe>();
-//    	this.topPipes = new ArrayList<Pipe>();
-//    	this.startSpawn = System.nanoTime();
-//    	
+    	this.pipes = new ArrayList<Pipe>();
+    	this.topPipes = new ArrayList<Pipe>();
+    	this.startSpawn = System.nanoTime();
+    	
     	
     	// game duration
     	GameTimer.gameTime = 90;
@@ -83,9 +89,9 @@ public class GameTimer extends AnimationTimer {
     {
 		this.redrawBackgroundImage();
 		
-//        this.autoSpawn(currentNanoTime);
+        this.autoSpawn(currentNanoTime);
         this.renderSprites();
-//        this.handleCollision();
+        this.handleCollision();
         this.moveSprites();
         this.drawScore();
         
@@ -131,85 +137,85 @@ public class GameTimer extends AnimationTimer {
        
         // added
         // draw Sprites in ArrayLists
-//        for (Pipe pipe : this.pipes) {
-//        	pipe.render( this.gc );
-//        	
-//        }
-//        
-//        for(Pipe topPipe : this.topPipes) {
-//        	topPipe.render( this.gc );
-//        }
+        for (Pipe pipe : this.pipes) {
+        	pipe.render( this.gc );
+        	
+        }
+        
+        for(Pipe topPipe : this.topPipes) {
+        	topPipe.render( this.gc );
+        }
     }
     
     void moveSprites() {
     	// added
-//    	if(this.character.isGrounded()) {
-//    		this.moveCharacterGrounded();
-//    	}
-//    	else {
-//    		this.moveCharacterFlying();
-//    	}
-//        this.movePipe();
+    	if(this.character.isGrounded()) {
+    		this.moveCharacterGrounded();
+    	}
+    	else {
+    		this.moveCharacterFlying();
+    	}
+        this.movePipe();
     	
         this.moveCharacter();
        
     }
 	
     // added methods
-//    void autoSpawn(long currentNanoTime) {
-//    	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
-//    	
-//    	
-//        if(spawnElapsedTime > GameTimer.SPAWN_DELAY) {
-//        	this.spawnPipes();
-//        	this.character.setScore(this.character.getScore()+1); //test score
-//        	this.startSpawn = System.nanoTime();
-//        }
-//    }
-//    
-//    
-//    private void spawnPipes(){
-//		int xPos = 1280;
-//		Random r = new Random();
-//		
-//		int middle = 250;
-//		
-//		int interval = xPos - PIPE_SPAWN_INTERVAL; //spawning interval
-//		
-//		int top = r.nextInt(middle); //random number for the basis of bottom and top pipe position
-//		int bottomPos = (400 + top); //position of bottom pipe
-//		int topPos = top - 400; //correcting the position of top pipe
-//		
-//		//312 and 0
-//		if(this.pipes.size() == 0) {//first set of pipes
-//			this.pipes.add(new Pipe(xPos, bottomPos, true));
-//			this.topPipes.add(new Pipe(xPos, topPos, false));
-//		}else {//following pipes
-//			int size = this.pipes.size();
-//			if(this.pipes.get(size-1).positionX <= interval) {//interval for spawning the next pipe
-//				this.pipes.add(new Pipe(xPos, bottomPos, true));
-//				this.topPipes.add(new Pipe(xPos, topPos, false));
-//			} 		
-//		}
-//		
-//
-//	}
-//    
-//    
-//    private void movePipe() {
-//		for(int i = 0; i < this.pipes.size(); i++){
-//			Pipe pipe = this.pipes.get(i);
-//			Pipe topPipe = this.topPipes.get(i);
-//			if(pipe.isVisible() && topPipe.isVisible()){
-//				topPipe.move();
-//				pipe.move();
-//			}
-//			else {
-//				this.pipes.remove(i);
-//				this.topPipes.remove(i);
-//			}
-//		}
-//	}
+    void autoSpawn(long currentNanoTime) {
+    	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
+    	
+    	
+        if(spawnElapsedTime > GameTimer.SPAWN_DELAY) {
+        	this.spawnPipes();
+        	this.character.setScore(this.character.getScore()+1); //test score
+        	this.startSpawn = System.nanoTime();
+        }
+    }
+    
+    
+    private void spawnPipes(){
+		int xPos = 1280;
+		Random r = new Random();
+		
+		int middle = 250;
+		
+		int interval = xPos - PIPE_SPAWN_INTERVAL; //spawning interval
+		
+		int top = r.nextInt(middle); //random number for the basis of bottom and top pipe position
+		int bottomPos = (400 + top); //position of bottom pipe
+		int topPos = top - 400; //correcting the position of top pipe
+		
+		//312 and 0
+		if(this.pipes.size() == 0) {//first set of pipes
+			this.pipes.add(new Pipe(xPos, bottomPos, true));
+			this.topPipes.add(new Pipe(xPos, topPos, false));
+		}else {//following pipes
+			int size = this.pipes.size();
+			if(this.pipes.get(size-1).positionX <= interval) {//interval for spawning the next pipe
+				this.pipes.add(new Pipe(xPos, bottomPos, true));
+				this.topPipes.add(new Pipe(xPos, topPos, false));
+			} 		
+		}
+		
+
+	}
+    
+    
+    private void movePipe() {
+		for(int i = 0; i < this.pipes.size(); i++){
+			Pipe pipe = this.pipes.get(i);
+			Pipe topPipe = this.topPipes.get(i);
+			if(pipe.isVisible() && topPipe.isVisible()){
+				topPipe.move();
+				pipe.move();
+			}
+			else {
+				this.pipes.remove(i);
+				this.topPipes.remove(i);
+			}
+		}
+	}
     
     
     /*
@@ -238,6 +244,11 @@ public class GameTimer extends AnimationTimer {
                 
                 if(code.equals("DOWN") || code.equals("S")) {
                 	GameTimer.goDown = true;
+                	//added as of dec 18
+                	//tentative mini game trigger (must be triggered by stack overflow buff)
+                	MiniWindow minigame = new MiniWindow(); //launch mini game
+                	minigame.start();
+                	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
                 }
                 
                 if(code.equals("P")) {
@@ -274,103 +285,124 @@ public class GameTimer extends AnimationTimer {
         });
     }
 	
-	// added methods
-//	private void moveCharacterGrounded() {
-//		if (GameTimer.goLeft) {
-//			if(this.character.getPositionX() <= LEFT_EDGE) {
-//				GameTimer.moveScreenRight = true;
-//				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
-//			}
-//			else {
-//			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
-//			}
-//		}
-//		else if(GameTimer.goRight) {
-//			if(this.character.getPositionX() >= RIGHT_EDGE) {
-//				GameTimer.moveScreenLeft = true;
-//				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
-//			}
-//			else {
-//			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
-//			}
-//		}
-//		else {
-//			this.character.setVelocityX(0); //stop moving
-//		}
-//		  
-//		  if(GameTimer.goUp && this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
-//			  this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
-//		  }else {//go down
-//			  this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
-//			  
-//			  if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
-//				  this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
-//				  this.character.setVelocityY(0);
-//			  }
-//			  GameTimer.goUp = false;
-//			  
-//		  }
-//		  
-//		  this.character.updatePosition();
-//	}
-//	
-//	
-//	private void moveCharacterFlying() {
-//		if (GameTimer.goLeft) {
-//			if(this.character.getPositionX() <= LEFT_EDGE) {
-//				GameTimer.moveScreenRight = true;
-//				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
-//			}
-//			else {
-//			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
-//			}
-//		}
-//		else if(GameTimer.goRight) {
-//			if(this.character.getPositionX() >= RIGHT_EDGE) {
-//				GameTimer.moveScreenLeft = true;
-//				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
-//			}
-//			else {
-//			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
-//			}
-//		}
-//		else {
-//			this.character.setVelocityX(0); //stop moving
-//		}
-//		
-//		if(GameTimer.goUp) {
-//			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
-//			GameTimer.goUp = false;
-//		}
-//		else {//go down
-//			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
-//			GameTimer.goUp = false;
-//		}
-//		 
-//		this.character.updatePosition();
-//	}
-//	
-//	
-//	private void handleCollision() {
-//		this.character.drawBounds(gc);
-//		
-//		for(int i = 0; i < this.pipes.size(); i++){
-//			Pipe pipe = this.pipes.get(i);
-//			Pipe topPipe = this.topPipes.get(i);
-//			
-//			pipe.drawBounds(gc);
-//			topPipe.drawBounds(gc);
-//			
-//			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
-//				this.character.setHealth(this.character.getHealth()-25);
-//				this.character.setVelocityX(0);
-//				this.character.setVelocityY(0);
-//			}
-//			
-//			System.out.println(this.character.getHealth());
-//		}
-//	}
+//<<<<<<< HEAD
+	//time increment new method - added as of dec 18
+	public static void setGameTime(int time) { //adding collected time to game time
+		GameTimer.gameTime += time;
+	}
 	
+	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
+	    PauseTransition pt = new PauseTransition(duration); //pauses the game for 5 secs
+	    pt.setOnFinished(event -> timer.start()); //game continues after the minigame
+
+	    timer.stop();
+	    pt.play();
+	}
+	
+	private AnimationTimer getTimer() {
+		return this;
+	}
+	
+	// new method
+//=======
+	// added methods
+	private void moveCharacterGrounded() {
+		if (GameTimer.goLeft) {
+			if(this.character.getPositionX() <= LEFT_EDGE) {
+				GameTimer.moveScreenRight = true;
+				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
+			}
+			else {
+			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+			}
+		}
+		else if(GameTimer.goRight) {
+			if(this.character.getPositionX() >= RIGHT_EDGE) {
+				GameTimer.moveScreenLeft = true;
+				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
+			}
+			else {
+			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+			}
+		}
+		else {
+			this.character.setVelocityX(0); //stop moving
+		}
+		  
+		  if(GameTimer.goUp && this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
+			  this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+		  }else {//go down
+			  this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
+			  
+			  if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
+				  this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
+				  this.character.setVelocityY(0);
+			  }
+			  GameTimer.goUp = false;
+			  
+		  }
+		  
+		  this.character.updatePosition();
+	}
+	
+	
+	private void moveCharacterFlying() {
+		if (GameTimer.goLeft) {
+			if(this.character.getPositionX() <= LEFT_EDGE) {
+				GameTimer.moveScreenRight = true;
+				this.character.setPositionXY(LEFT_EDGE, this.character.getPositionY());
+			}
+			else {
+			this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
+			}
+		}
+		else if(GameTimer.goRight) {
+			if(this.character.getPositionX() >= RIGHT_EDGE) {
+				GameTimer.moveScreenLeft = true;
+				this.character.setPositionXY(RIGHT_EDGE, this.character.getPositionY());
+			}
+			else {
+			this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
+			}
+		}
+		else {
+			this.character.setVelocityX(0); //stop moving
+		}
+		
+		if(GameTimer.goUp) {
+			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+			GameTimer.goUp = false;
+		}
+		else {//go down
+			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
+			GameTimer.goUp = false;
+		}
+		 
+		this.character.updatePosition();
+	}
+	
+	
+	private void handleCollision() {
+		this.character.drawBounds(gc);
+		
+		for(int i = 0; i < this.pipes.size(); i++){
+			Pipe pipe = this.pipes.get(i);
+			Pipe topPipe = this.topPipes.get(i);
+			
+			pipe.drawBounds(gc);
+			topPipe.drawBounds(gc);
+			
+			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
+				this.character.setHealth(this.character.getHealth()-25);
+				this.character.setVelocityX(0);
+				this.character.setVelocityY(0);
+			}
+			
+			System.out.println(this.character.getHealth());
+		}
+	}
+	
+//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
 	// implements a counting down mechanism
 	private void startCountdown() {
 	    // Create an array of Timeline with a single element
