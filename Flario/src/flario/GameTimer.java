@@ -440,14 +440,12 @@ public class GameTimer extends AnimationTimer {
 	
 
 	// method for updating gametime (minigame)
-
 	public static void setGameTime(int time) { //adding collected time to game time
 		GameTimer.gameTime += time;
 	}
 	
   
 	// pauses game scene when minigame is triggered
-
 	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
 	    PauseTransition pt = new PauseTransition(duration); //pauses the game for 5 secs
 	    pt.setOnFinished(event -> timer.start()); //game continues after the minigame
@@ -461,7 +459,6 @@ public class GameTimer extends AnimationTimer {
 	
   
 	// character motion in grounded mode
-
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -582,13 +579,6 @@ public class GameTimer extends AnimationTimer {
 			
 			// chara collided with pipe
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
-				this.character.isColliding = true; // update flag
-				this.character.setVelocityX(0);
-				this.character.setVelocityY(0);
-			}
-			else {
-				this.character.isColliding = false;
-			}
 				currentTime = System.currentTimeMillis();
 				if(currentTime - lastDamageTime >= 1000) { // 1000 milliseconds = 1 second
 			        this.character.setHealth(this.character.getHealth() - 25);
@@ -598,9 +588,8 @@ public class GameTimer extends AnimationTimer {
 				this.character.setVelocityX(0);
 				this.character.setVelocityY(0);
 			}
-			
-
 		}
+		
 		
 		for(int i = 0; i < this.blocks.size(); i++){ // block collision
 			Block block = this.blocks.get(i);
@@ -716,7 +705,6 @@ public class GameTimer extends AnimationTimer {
 
 	private void endCountdown() {
 		if (timeline != null) {
-			this.character.isAlive = false;
             timeline.stop();
 	    }
 	}
