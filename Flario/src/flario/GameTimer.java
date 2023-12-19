@@ -361,24 +361,27 @@ public class GameTimer extends AnimationTimer {
 				this.gc.fillText("Stack Overflow buff is gone!", 600, 100);
 			}
 			else if(changeMode == true) {//change mode
+				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;
 				
-				this.changeCount++;
-				
-				if(this.changeCount == 1) {
-					this.alreadyBuffed = true;
-					this.gc.fillText("Change mode!", 600, 100);
+				if(buffElapsedTime >= 1 && buffElapsedTime < 2) {
+					this.changeCount++;
+					
+					if(this.changeCount == 1) {
+						this.alreadyBuffed = true;
+						this.gc.fillText("Change mode!", 600, 100);
+					}
+					
 					
 				}
 				
-				if(this.changeCount == 2) {
-					this.alreadyBuffed = false;
-					this.gc.fillText("Back to ground!", 600, 100);
-					this.changeCount = 0;
+				if(buffElapsedTime >= 3 && buffElapsedTime < 4) {
+					if(this.changeCount == 2) {
+						this.alreadyBuffed = false;
+						this.gc.fillText("Back to ground!", 600, 100);
+						this.changeCount = 0;
+					}
 				}
-				
-				
 			}
-
     	}
 
 	// handler for key events
