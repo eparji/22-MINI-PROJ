@@ -25,13 +25,16 @@ public class Level {
 	private final static int BUFF_RARITY = 10; // must be at least 4
 	
 	public Level() {
-		Level.currentDistance = 0;
 		Level.finishDistance = LEVEL_LENGTH;
 		this.groundIntervalCounter = 0;
 		this.flyingIntervalCounter = 0;
-    	this.pipes = new ArrayList<Pipe>();
-    	this.topPipes = new ArrayList<Pipe>();
-    	this.blocks = new ArrayList<Block>();
+    		this.pipes = new ArrayList<Pipe>();
+    		this.topPipes = new ArrayList<Pipe>();
+    		this.blocks = new ArrayList<Block>();
+    		this.modules = new ArrayList<Module>(); 
+    		this.incentives = new ArrayList<Incentive>();
+    		this.stacks = new ArrayList<StackOverflow>();
+    		this.change = new ArrayList<ChangeMode>();
 		this.generateLevel();
 	}
 	
