@@ -20,16 +20,16 @@ import javafx.util.Duration;
 public class GameTimer extends AnimationTimer {
 	private GraphicsContext gc;
 	private Character character;
-	private Scene scene;
-	private Level level;
+	private Scene scene; 
+	private Level level; // level creation
 	
-	// added
 	private long buffTime;
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean moveScreenLeft, moveScreenRight;
 	private static boolean isTouchingGround;
 	private boolean incentiveBuff, moduleBuff, stackBuff, alreadyBuffed, changeMode;
 	
+	// obstacle/collectible arraylists
 	private ArrayList<Pipe> pipes;
 	private ArrayList<Pipe> topPipes;
 	private ArrayList<Block> blocks;
@@ -70,7 +70,6 @@ public class GameTimer extends AnimationTimer {
 	public final static int LEFT_EDGE = 100;
 	public final static int RIGHT_EDGE = 1100;
 	
-	
     GameTimer(Scene scene, GraphicsContext gc) {
     	this.gc = gc;
     	this.scene = scene;    	
@@ -97,25 +96,23 @@ public class GameTimer extends AnimationTimer {
     @Override
 	public void handle(long currentNanoTime)
     {
-    	this.redrawBackgroundImage();
+    	this.redrawBackgroundImage(); // redrawing bg per tick
 		
-        this.renderSprites();
-        this.handleCollision();
-        this.moveSprites();
-        this.drawScore();
-    
-//      this.handleDamage();
 
+        this.renderSprites();  // rendering images per tick 
+        this.handleCollision();// collision between objects/sprites
+        this.moveSprites();    // motion/movement of sprites
+        this.drawScore();      // information on top left of scene
         this.checkBuff(currentNanoTime);
-
+	    
+        // checker for stopping criteria
         if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
-        	timer.cancel();
-        	if(!this.character.isAlive()) {
+        	if(!this.character.isAlive()) { // gameover/lost
         		GameStage.showGameOver(computeFinalScore(1), gameTime, 1);
         	}
-        	else {
+        	else { //game won
         		GameStage.showGameOver(computeFinalScore(0), gameTime, 0);
         	}
         }
@@ -125,6 +122,7 @@ public class GameTimer extends AnimationTimer {
         }
     }
     
+    // redrawing the contents of the canvas
     void redrawBackgroundImage() {
 		// clear the canvas
         this.gc.clearRect(0, 0, GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
@@ -138,17 +136,18 @@ public class GameTimer extends AnimationTimer {
         //reset background x pos to loop background
         if(this.backgroundX <= -this.background.getWidth() && this.backgroundX % this.background.getWidth() == 0) {
         	this.backgroundX = 0;
-        	
         }
         
         if(this.backgroundX>=GameStage.WINDOW_WIDTH) 
         	this.backgroundX = GameStage.WINDOW_WIDTH-this.background.getWidth();
     }
     
-    // method for redrawing sprites per tick
+
+    // method for rendering the sprites
+
     void renderSprites() {
     	// draw character
-    	if(GameTimer.goRight) {
+    	if(GameTimer.goRight) { // sprite image depends on its motion
     		this.character.faceRight();
     	}
     	else {
@@ -190,14 +189,14 @@ public class GameTimer extends AnimationTimer {
     
     // method for moving character and other objects
     void moveSprites() {
-    	// added
+    	// character motion
     	if(this.character.isGrounded()) {
     		this.moveCharacterGrounded();
     	}
     	else {
     		this.moveCharacterFlying();
     	}
-        this.moveObstacle(); // helper method
+        this.moveObstacle(); // obstacle motion
     }
   
     // method that handles movements for pipes/blocks
@@ -303,6 +302,8 @@ public class GameTimer extends AnimationTimer {
 		}
 	}
 
+  
+    // method for buff spawning
 
 	void checkBuff(long currentNanoTime) {
     	//random buff every 5 pipes
@@ -310,10 +311,8 @@ public class GameTimer extends AnimationTimer {
 			if(incentiveBuff == true) {//spawn incentive buff
 				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
 				
-				
 				this.alreadyBuffed = true;
 				this.gc.fillText("Gained incentive buff!", 600, 60);
-		
 				
 				if(buffElapsedTime > BUFF_DURATION) {
 					
@@ -326,7 +325,6 @@ public class GameTimer extends AnimationTimer {
 			
 			else if(moduleBuff == true){//spawn module buff
 				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
-				
 				
 				if(this.alreadyBuffed == false) {
 					this.character.width = this.character.width / 1.6;
@@ -355,10 +353,9 @@ public class GameTimer extends AnimationTimer {
 				this.alreadyBuffed = true;
 				this.gc.fillText("Gained stack overflow buff!", 600, 60);
 				
-				//tentative mini game trigger (must be triggered by stack overflow buff)
-            			MiniWindow minigame = new MiniWindow(); //launch mini game
-            			minigame.start();
-            			GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
+    			MiniWindow minigame = new MiniWindow(); //launch mini game
+    			minigame.start();
+    			GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
 				
 				this.stackBuff = false;
 				this.alreadyBuffed = false;
@@ -375,11 +372,8 @@ public class GameTimer extends AnimationTimer {
 			}
 
     	}
-    /*
-     * Catches the left and right key presses for the guardian's movement
-     * */
-  
-    // prepares key event handlers
+
+	// handler for key events
 	private void prepareActionHandlers() {
 		startCountdown();
     	this.scene.setOnKeyPressed(new EventHandler<KeyEvent>()
@@ -444,12 +438,16 @@ public class GameTimer extends AnimationTimer {
         });
     }
 	
-	//time increment 
+
+	// method for updating gametime (minigame)
+
 	public static void setGameTime(int time) { //adding collected time to game time
 		GameTimer.gameTime += time;
 	}
 	
-	// pauses gameScene for the duration of a minigame
+  
+	// pauses game scene when minigame is triggered
+
 	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
 	    PauseTransition pt = new PauseTransition(duration); //pauses the game for 5 secs
 	    pt.setOnFinished(event -> timer.start()); //game continues after the minigame
@@ -461,7 +459,9 @@ public class GameTimer extends AnimationTimer {
 		return this;
 	}
 	
-	// methods for moving character in ground mode
+  
+	// character motion in grounded mode
+
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -511,7 +511,9 @@ public class GameTimer extends AnimationTimer {
 		  this.character.updatePosition();
 	}
 	
-	// flying mode movement
+
+	// character motion in flying mode
+
 	private void moveCharacterFlying() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -553,6 +555,8 @@ public class GameTimer extends AnimationTimer {
 		this.character.updatePosition();
 	}
 	
+	// method for collision handling between character and objects
+
 	// method for handling damage per second
 //	public void handleDamage() {
 //	    timer = new Timer();
@@ -568,6 +572,7 @@ public class GameTimer extends AnimationTimer {
 //	}
 	
 	// method for handling collisions between char and obstacles
+
 	private void handleCollision() {
 		this.character.drawBounds(gc);
 		
@@ -575,6 +580,7 @@ public class GameTimer extends AnimationTimer {
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
 			
+			// chara collided with pipe
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
 				this.character.isColliding = true; // update flag
 				this.character.setVelocityX(0);
@@ -705,25 +711,25 @@ public class GameTimer extends AnimationTimer {
 	    timeline.play();
 	}
 	
-	
-	// method for stopping timeline
+
+	// method for stopping the timeline
+
 	private void endCountdown() {
 		if (timeline != null) {
 			this.character.isAlive = false;
             timeline.stop();
 	    }
 	}
-
 	
 	// logic behind remaining time printing
 	private String computeTime() {
 		int time = gameTime;
 		String min, sec;
 		
-		if(time > 59) {
+		if(time > 59) { // minute counter
 			min = String.valueOf(time/60);
 		}
-		else {
+		else { 
 			min = "0";
 		}
 		
@@ -738,14 +744,18 @@ public class GameTimer extends AnimationTimer {
 		return(normalizedTime);
 	}
 	
-	// logic for score computation
+
+	// logic behiind computing score
+
 	private String computeScore() {
 		int score = (int) (Character.INIT_SCORE - (elapsedTime*TIME_SCORE_MULT));
 		this.character.setScore(score);
 		return(String.format("%d", this.character.getScore()));
 	}
 	
-	// logic for final standing
+
+	// logic behind computing final score
+
 	private String computeFinalScore(int type) {
 		if(type ==1) return("INC");
 		int score = (int) (this.character.getScore() + (gameTime*FINAL_SCORE_MULT));
@@ -764,13 +774,17 @@ public class GameTimer extends AnimationTimer {
 		else return("5.00");
 	}
 	
-	// logic for console printing of time left and score
+
+	// printing of score in console
+
 	private void printScore() {
 		System.out.println("TIME LEFT: " + computeTime());
 		System.out.println("USER'S GRADE IS: " + computeScore() + "\n");
 	}
 	
-	// in-scene printing of score and time left
+
+	// drawing of score on the canvas
+
 	private void drawScore(){
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
