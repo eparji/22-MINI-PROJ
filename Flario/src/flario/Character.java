@@ -2,6 +2,7 @@ package flario;
 
 import flario.Character;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Character extends Sprite {
 	private String name;
@@ -22,8 +23,10 @@ public class Character extends Sprite {
 	
 	private final static Image RIGHT_CHAR_IMG = new Image("right-char.png", CHARACTER_WIDTH, CHARACTER_HEIGHT, false, false);
 	private final static Image LEFT_CHAR_IMG = new Image("left-char.png", CHARACTER_WIDTH, CHARACTER_HEIGHT, false, false);
+
 	private Image rightImage; // The right-facing sprite
-    private Image leftImage; // The left-facing sprite
+  private Image leftImage; // The left-facing sprite
+
     
 	Character(String name){
        	super(Character.INITIAL_X, Character.INITIAL_Y, Character.CHARACTER_WIDTH, Character.CHARACTER_HEIGHT, Character.RIGHT_CHAR_IMG);
@@ -34,8 +37,9 @@ public class Character extends Sprite {
 		this.health = 100;
 		this.xPos = INITIAL_X;
 		
+
 		this.rightImage = RIGHT_CHAR_IMG;
-        this.leftImage = LEFT_CHAR_IMG;
+    this.leftImage = LEFT_CHAR_IMG;
 	}
 
 	String getName(){
@@ -73,14 +77,15 @@ public class Character extends Sprite {
     	return this.isGrounded;
     } 
     
-    // methods to change the character's sprite
+ // Methods to change the character's sprite
     public void faceRight() {
-        this.setImage(rightImage);
+        imageView.setImage(RIGHT_CHAR_IMG);
     }
 
     public void faceLeft() {
-        this.setImage(leftImage);
+        imageView.setImage(LEFT_CHAR_IMG);
     }
+
     
 //    void updateXPos() {
 //    	this.xPos += CHARACTER_SPEEDX;
