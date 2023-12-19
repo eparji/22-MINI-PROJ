@@ -2,6 +2,8 @@ package flario;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
@@ -38,9 +40,6 @@ public class GameTimer extends AnimationTimer {
 
 //	private Image background = new Image( "file:src/images/background.png", 1280, 720, false, false);
 	
-	// added
-	private Image background2 = new Image("plainsky.png", 1280, 720, false, false);
-	private long startSpawn;
 	public final static double SPAWN_DELAY = 1;
     
 	
@@ -54,8 +53,8 @@ public class GameTimer extends AnimationTimer {
 	public final static int BACKGROUND_SPEED = 1;
 	public final static int SCREEN_MOVE_SPEED = 2;
 	public final static int COLLISION_BUFFER = 16;
+	private static Timer timer;
 	
-	// added
 	public final static int WIDTH_PER_PIPE = 80;
 	public final static int PIPE_INITIAL_XPOS = 1280;
 	public final static int PIPE_SPAWN_INTERVAL = 200;
@@ -67,7 +66,7 @@ public class GameTimer extends AnimationTimer {
     	this.gc = gc;
     	this.scene = scene;    	
     	this.character = new Character("Mario");
-    	//this.startSpawn = this.startShoot = System.nanoTime();
+    	
     	// obstacle generation done through level class
     	this.level = new Level();
     	this.pipes = this.level.pipes;
@@ -91,9 +90,12 @@ public class GameTimer extends AnimationTimer {
         this.handleCollision();
         this.moveSprites();
         this.drawScore();
+//        this.handleDamage();
+        
         if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
+        	timer.cancel();
         	if(!this.character.isAlive()) {
         		GameStage.showGameOver(computeFinalScore(1), gameTime, 1);
         	}
@@ -113,10 +115,6 @@ public class GameTimer extends AnimationTimer {
         this.gc.drawImage( background, this.backgroundX+this.background.getWidth(), 0 );
         this.gc.drawImage( background, this.backgroundX, 0);
         
-        // hitbox debug code
-        // this.gc.strokeLine(1280, GROUND_POSITION, 0, GROUND_POSITION);
-        // this.character.drawBounds(gc);
-        
         //reset background x pos to loop background
         if(this.backgroundX <= -this.background.getWidth() && this.backgroundX % this.background.getWidth() == 0) {
         	this.backgroundX = 0;
@@ -127,6 +125,7 @@ public class GameTimer extends AnimationTimer {
         	this.backgroundX = GameStage.WINDOW_WIDTH-this.background.getWidth();
     }
     
+    // method for redrawing sprites per tick
     void renderSprites() {
     	// draw character
     	if(GameTimer.goRight) {
@@ -153,6 +152,7 @@ public class GameTimer extends AnimationTimer {
         }
     }
     
+    // method for moving character and other objects
     void moveSprites() {
     	// added
     	if(this.character.isGrounded()) {
@@ -161,11 +161,12 @@ public class GameTimer extends AnimationTimer {
     	else {
     		this.moveCharacterFlying();
     	}
-        this.moveObstacle();
+        this.moveObstacle(); // helper method
     }
   
+    // method that handles movements for pipes/blocks
     private void moveObstacle() {
-		for(int i = 0; i < this.pipes.size(); i++){
+		for(int i = 0; i < this.pipes.size(); i++){ // pipes
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
 			if(moveScreenRight) {
@@ -188,7 +189,7 @@ public class GameTimer extends AnimationTimer {
 			topPipe.updatePosition();
 		}
     	
-		for(int i = 0; i < this.blocks.size(); i++){
+		for(int i = 0; i < this.blocks.size(); i++){ //blocks
 			Block block = this.blocks.get(i);
 			if(moveScreenRight) {
 				block.setVelocityX(SCREEN_MOVE_SPEED);
@@ -203,9 +204,7 @@ public class GameTimer extends AnimationTimer {
 		}
 	}
     
-    /*
-     * Catches the left and right key presses for the guardian's movement
-     * */
+    // prepares key event handlers
 	private void prepareActionHandlers() {
 		startCountdown();
     	this.scene.setOnKeyPressed(new EventHandler<KeyEvent>()
@@ -232,8 +231,6 @@ public class GameTimer extends AnimationTimer {
                 }
                 
                 if(code.equals("Q")) {
-                	//added as of dec 18
-                	//tentative mini game trigger (must be triggered by stack overflow buff)
                 	MiniWindow minigame = new MiniWindow(); //launch mini game
                 	minigame.start();
                 	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
@@ -272,15 +269,15 @@ public class GameTimer extends AnimationTimer {
         });
     }
 	
-	//time increment new method - added as of dec 18
+	//time increment 
 	public static void setGameTime(int time) { //adding collected time to game time
 		GameTimer.gameTime += time;
 	}
 	
+	// pauses gameScene for the duration of a minigame
 	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
 	    PauseTransition pt = new PauseTransition(duration); //pauses the game for 5 secs
 	    pt.setOnFinished(event -> timer.start()); //game continues after the minigame
-
 	    timer.stop();
 	    pt.play();
 	}
@@ -289,7 +286,7 @@ public class GameTimer extends AnimationTimer {
 		return this;
 	}
 	
-	// added methods
+	// methods for moving character in ground mode
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -303,7 +300,6 @@ public class GameTimer extends AnimationTimer {
 			}
 		}
 		else if(GameTimer.goRight) {
-//			this.character.updateXPos();
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
 				GameTimer.moveScreenRight = false;
@@ -327,7 +323,7 @@ public class GameTimer extends AnimationTimer {
 		if(GameTimer.goUp && isTouchingGround) {
 			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
 			GameTimer.isTouchingGround = false;
-		}else {//go down
+		}else { // down
 			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
 			  
 			if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
@@ -340,6 +336,7 @@ public class GameTimer extends AnimationTimer {
 		  this.character.updatePosition();
 	}
 	
+	// flying mode movement
 	private void moveCharacterFlying() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -353,7 +350,6 @@ public class GameTimer extends AnimationTimer {
 			}
 		}
 		else if(GameTimer.goRight) {
-//			this.character.updateXPos();
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
 				GameTimer.moveScreenRight = false;
@@ -382,26 +378,39 @@ public class GameTimer extends AnimationTimer {
 		this.character.updatePosition();
 	}
 	
+	// method for handling damage per second
+//	public void handleDamage() {
+//	    timer = new Timer();
+//	    timer.scheduleAtFixedRate(new TimerTask() {
+//	        @Override
+//	        public void run() {
+//	            if(character.isColliding) {
+//	            	System.out.println("Character health is: " + character.getHealth());
+//	                character.setHealth(character.getHealth() - 25);
+//	            }
+//	        }
+//	    }, 0, 500); // Run every half-sec
+//	}
+	
+	// method for handling collisions between char and obstacles
 	private void handleCollision() {
 		this.character.drawBounds(gc);
 		
-		for(int i = 0; i < this.pipes.size(); i++){
+		for(int i = 0; i < this.pipes.size(); i++){ // pipe collision
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
 			
-			//pipe.drawBounds(gc);
-			//topPipe.drawBounds(gc);
-			
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
-				this.character.setHealth(this.character.getHealth()-25);
+				this.character.isColliding = true; // update flag
 				this.character.setVelocityX(0);
 				this.character.setVelocityY(0);
 			}
-			
-//			System.out.println(this.character.getHealth());
+			else {
+				this.character.isColliding = false;
+			}
 		}
 		
-		for(int i = 0; i < this.blocks.size(); i++){
+		for(int i = 0; i < this.blocks.size(); i++){ // block collision
 			Block block = this.blocks.get(i);
 			
 			block.drawBounds(gc);
@@ -410,6 +419,7 @@ public class GameTimer extends AnimationTimer {
 
 				System.out.println(this.character.getPositionX() +" "+ this.character.getPositionY() +" "+ block.getPositionX() +" "+ block.getPositionY());
 				
+				// clipping logic
 				if(this.character.getPositionY() < block.getPositionY() - this.character.getHeight() + COLLISION_BUFFER) {
 					this.character.setVelocityY(0);
 					System.out.println("trigger1");
@@ -440,7 +450,6 @@ public class GameTimer extends AnimationTimer {
 	
 	// implements a counting down mechanism
 	private void startCountdown() {
-
 	    // Create a key frame that updates the remaining time every second
 	    KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
 	        gameTime--;
@@ -457,8 +466,11 @@ public class GameTimer extends AnimationTimer {
 	    timeline.play();
 	}
 	
+	
+	// method for stopping timeline
 	private void endCountdown() {
 		if (timeline != null) {
+			this.character.isAlive = false;
             timeline.stop();
 	    }
 	}
@@ -487,12 +499,14 @@ public class GameTimer extends AnimationTimer {
 		return(normalizedTime);
 	}
 	
+	// logic for score computation
 	private String computeScore() {
 		int score = (int) (Character.INIT_SCORE - (elapsedTime*TIME_SCORE_MULT));
 		this.character.setScore(score);
 		return(String.format("%d", this.character.getScore()));
 	}
 	
+	// logic for final standing
 	private String computeFinalScore(int type) {
 		if(type ==1) return("INC");
 		int score = (int) (this.character.getScore() + (gameTime*FINAL_SCORE_MULT));
@@ -512,17 +526,17 @@ public class GameTimer extends AnimationTimer {
 		
 	}
 	
+	// logic for console printing of time left and score
 	private void printScore() {
 		System.out.println("TIME LEFT: " + computeTime());
 		System.out.println("USER'S GRADE IS: " + computeScore() + "\n");
 	}
 	
+	// in-scene printing of score and time left
 	private void drawScore(){
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
-		// modified the ff code
 		this.gc.fillText("Remaining Time: " + computeTime(), 20, 30);
-		
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Score: " + computeScore(), 500, 30);
