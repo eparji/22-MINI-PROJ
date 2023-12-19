@@ -47,7 +47,7 @@ public class GameTimer extends AnimationTimer {
 	private static int gameTime;
 	private static int elapsedTime;
 	public final static double TIME_SCORE_MULT = 0.5;
-	public final static double FINAL_SCORE_MULT= 0.15;
+	public final static double FINAL_SCORE_MULT= 0.75;
 	
 	public final static int GROUND_POSITION = 510;
 	public final static double GRAVITY_SPEED = 0.1;
@@ -87,12 +87,10 @@ public class GameTimer extends AnimationTimer {
     {
     	this.redrawBackgroundImage();
 		
-        //this.autoSpawn(currentNanoTime);
         this.renderSprites();
         this.handleCollision();
         this.moveSprites();
         this.drawScore();
-//        System.out.println(Level.isFinished(this.character.getXPos()));
         if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
@@ -125,17 +123,16 @@ public class GameTimer extends AnimationTimer {
         	
         }
         
-        
         if(this.backgroundX>=GameStage.WINDOW_WIDTH) 
         	this.backgroundX = GameStage.WINDOW_WIDTH-this.background.getWidth();
-//        System.out.println("Background X: " + this.backgroundX);
     }
     
     void renderSprites() {
-    	// draw guardian
+    	// draw character
+    	if(GameTimer.goRight) this.character.faceRight();
+    	if(GameTimer.goLeft) this.character.faceLeft();
         this.character.render(this.gc);
         
-        // added
         // draw Sprites in ArrayLists
         for (Pipe pipe : this.pipes) {
         	pipe.render( this.gc );
@@ -166,8 +163,6 @@ public class GameTimer extends AnimationTimer {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
-			//System.out.println(moveScreenRight);
-			//System.out.println(moveScreenLeft);
 			if(moveScreenRight) {
 				System.out.print("exec");
 				pipe.setVelocityX(SCREEN_MOVE_SPEED);
@@ -229,12 +224,15 @@ public class GameTimer extends AnimationTimer {
                 
                 if(code.equals("DOWN") || code.equals("S")) {
                 	GameTimer.goDown = true;
+                }
+                
+                if(code.equals("Q")) {
                 	//added as of dec 18
                 	//tentative mini game trigger (must be triggered by stack overflow buff)
-                	
                 	MiniWindow minigame = new MiniWindow(); //launch mini game
                 	minigame.start();
                 	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
+                
                 }
                 
                 if(code.equals("P")) {
@@ -258,13 +256,13 @@ public class GameTimer extends AnimationTimer {
                 	
                 }
                 
-                //if(code.equals("UP") || code.equals("W")) {
-                	//GameTimer.goUp = false;
-                //}
+                if(code.equals("UP") || code.equals("W")) {
+                	GameTimer.goUp = false;
+                }
                 
-                //if(code.equals("DOWN") || code.equals("S")) {
-                	//GameTimer.goDown = false;
-                //}
+                if(code.equals("DOWN") || code.equals("S")) {
+                	GameTimer.goDown = false;
+                }
             }
         });
     }
@@ -428,9 +426,10 @@ public class GameTimer extends AnimationTimer {
 				if(this.character.getPositionX() > block.getPositionX() + this.character.getWidth() - COLLISION_BUFFER) {
 					GameTimer.goLeft = false;
 					System.out.println("trigger4");
-					this.character.setPositionXY(block.getPositionX()+this.character.getWidth(), this.character.getPositionY());
+					this.character.setPositionXY(block.getPositionX()+ block.getWidth(), this.character.getPositionY());
 				}
 			
+			}
 		}
 	}
 	
