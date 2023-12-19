@@ -11,8 +11,8 @@ public class Pipe extends Sprite{
     private double width;
     
     private final static double CHARACTER_SPEED = 1;
-    private final static double PIPE_WIDTH = 100;
-    private final static double PIPE_HEIGHT = 525;
+    private final static double PIPE_WIDTH = 128;
+    private final static double PIPE_HEIGHT = 512;
     
     private final static Image BOTTOM_PIPE_IMAGE = new Image(Pipe.class.getResource("/sprites/new_pipe.png").toString(), PIPE_WIDTH, PIPE_HEIGHT, false, false);
     private final static Image TOP_PIPE_IMAGE = new Image(Pipe.class.getResource("/sprites/top_new_pipe.png").toString(), PIPE_WIDTH, PIPE_HEIGHT, false, false);
