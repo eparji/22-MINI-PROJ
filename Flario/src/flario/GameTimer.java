@@ -552,7 +552,6 @@ public class GameTimer extends AnimationTimer {
 				this.character.setVelocityY(0);
 			}
 			
-//			System.out.println(this.character.getHealth());
 		}
 		
 		for(int i = 0; i < this.blocks.size(); i++){
