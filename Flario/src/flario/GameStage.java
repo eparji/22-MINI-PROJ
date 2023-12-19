@@ -36,6 +36,7 @@ public class GameStage {
 	private Canvas canvas;			// the canvas where the animation happens
 	private static MediaPlayer bgplayer;
 	private static MediaPlayer gameplayer;
+	private static MediaPlayer minigameplayer;
 	private static MediaPlayer gameover;
 	
 	public final static int WINDOW_WIDTH = 1280;
@@ -51,7 +52,7 @@ public class GameStage {
     
     private final static Media GAME_MUSIC = new Media(GameStage.class.getResource("/music/flario-theme.mp3").toExternalForm());
     private final static Media BG_MUSIC = new Media(GameStage.class.getResource("/music/menu-theme.mp3").toExternalForm());
-//    private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
+    private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
     private final static Media GAMEOVER = new Media(GameStage.class.getResource("/music/flario-gameover.mp3").toExternalForm());
     
     public final static Font FONT_8BIT;
@@ -88,23 +89,33 @@ public class GameStage {
 		if(gameplayer != null) gameplayer.stop();
 		
 	    bgplayer = new MediaPlayer(GameStage.BG_MUSIC);
-	    bgplayer.setVolume(0.18);
+	    bgplayer.setVolume(0.22);
 	    bgplayer.setCycleCount(MediaPlayer.INDEFINITE); // Play the music indefinitely
 	    bgplayer.play();
 	}
 	
 	// method that plays the game music when play button gets clicked
-	void playgamemusic()
+	static void playgamemusic()
 	{
 		if(bgplayer != null) bgplayer.stop();
+		if(minigameplayer != null) minigameplayer.stop();
 		
 		gameplayer = new MediaPlayer(GameStage.GAME_MUSIC);
-		gameplayer.setVolume(0.12);
+		gameplayer.setVolume(0.18);
 		gameplayer.setCycleCount(MediaPlayer.INDEFINITE); 
 		gameplayer.play();
 	}
 	
-	// new method
+	static void playminigamemusic()
+	{
+		if(gameplayer != null) gameplayer.stop();
+		
+		minigameplayer = new MediaPlayer(GameStage.MINIGAME);
+		minigameplayer.setVolume(0.20);
+		minigameplayer.setCycleCount(MediaPlayer.INDEFINITE); 
+		minigameplayer.play();
+	}
+	
 	// method that plays the gameover music when timer runs out
 	static void playgameover()
 	{

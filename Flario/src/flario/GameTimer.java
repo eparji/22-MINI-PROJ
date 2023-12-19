@@ -240,6 +240,7 @@ public class GameTimer extends AnimationTimer {
                 	GameTimer.goDown = true;
                 	//added as of dec 18
                 	//tentative mini game trigger (must be triggered by stack overflow buff)
+                	
                 	MiniWindow minigame = new MiniWindow(); //launch mini game
                 	minigame.start();
                 	GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
@@ -296,7 +297,6 @@ public class GameTimer extends AnimationTimer {
 		return this;
 	}
 	
-	// new method
 	// added methods
 	private void moveCharacterGrounded() {
 		if (GameTimer.goLeft) {
@@ -388,7 +388,7 @@ public class GameTimer extends AnimationTimer {
 				this.character.setVelocityY(0);
 			}
 			
-			System.out.println(this.character.getHealth());
+//			System.out.println(this.character.getHealth());
 		}
 	}
 	
