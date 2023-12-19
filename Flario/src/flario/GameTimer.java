@@ -46,11 +46,12 @@ public class GameTimer extends AnimationTimer {
 	
 	private static int gameTime;
 	private static int elapsedTime;
+	public final static double TIME_SCORE_MULT = 0.5;
+	public final static double FINAL_SCORE_MULT= 0.15;
 	
 	public final static int GROUND_POSITION = 510;
 	public final static double GRAVITY_SPEED = 0.1;
 	public final static int BACKGROUND_SPEED = 1;
-	public final static double TIME_SCORE_MULT = 0.5;
 	public final static int SCREEN_MOVE_SPEED = 2;
 	
 	// added
@@ -94,8 +95,13 @@ public class GameTimer extends AnimationTimer {
         if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
-        	if(!this.character.isAlive()) GameStage.showGameOver(this.character.getScore(), gameTime, 1);
-        	else GameStage.showGameOver(this.character.getScore(), gameTime, 0);
+        	if(!this.character.isAlive()) {
+        		GameStage.showGameOver(this.character.getScore(), gameTime, 1);
+        	}
+        	else {
+        		computeFinalScore();
+        		GameStage.showGameOver(this.character.getScore(), gameTime, 0);
+        	}
         }
     }
     
@@ -524,6 +530,13 @@ public class GameTimer extends AnimationTimer {
 		int score = (int) (Character.INIT_SCORE - (elapsedTime*TIME_SCORE_MULT));
 		this.character.setScore(score);
 		return(String.format("%d", this.character.getScore()));
+	}
+	
+	private String computeFinalScore() {
+		int score = (int) (this.character.getScore() + (gameTime*FINAL_SCORE_MULT));
+		this.character.setScore(score);
+		return(String.format("%d", this.character.getScore()));
+		
 	}
 	
 	private void printScore() {
