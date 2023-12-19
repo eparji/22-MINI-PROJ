@@ -6,12 +6,13 @@ import javafx.scene.image.ImageView;
 
 public class Character extends Sprite {
 	private String name;
-	private boolean isAlive;
+	public boolean isAlive; // flag for alive criteria in gametimer
 	private int score;
 	private boolean isGrounded;
 	private int health;
 	public double xPos;
 	
+	public boolean isColliding; // collision property
 	
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
@@ -21,12 +22,10 @@ public class Character extends Sprite {
 	public final static double CHARACTER_HEIGHT = 64;
 	public final static int INIT_SCORE = 50;
 	
+	// imported images for character sprite
 	private final static Image RIGHT_CHAR_IMG = new Image("right-char.png", CHARACTER_WIDTH, CHARACTER_HEIGHT, false, false);
 	private final static Image LEFT_CHAR_IMG = new Image("left-char.png", CHARACTER_WIDTH, CHARACTER_HEIGHT, false, false);
-
-	private Image rightImage; // The right-facing sprite
-  private Image leftImage; // The left-facing sprite
-
+	private ImageView imageView;
     
 	Character(String name){
        	super(Character.INITIAL_X, Character.INITIAL_Y, Character.CHARACTER_WIDTH, Character.CHARACTER_HEIGHT, Character.RIGHT_CHAR_IMG);
@@ -36,10 +35,8 @@ public class Character extends Sprite {
 		this.isGrounded = false;
 		this.health = 100;
 		this.xPos = INITIAL_X;
-		
-
-		this.rightImage = RIGHT_CHAR_IMG;
-    this.leftImage = LEFT_CHAR_IMG;
+//		this.isColliding = false;
+		this.imageView = new ImageView(RIGHT_CHAR_IMG);
 	}
 
 	String getName(){
@@ -60,7 +57,7 @@ public class Character extends Sprite {
 	
 	public void setHealth(int health) {
 		this.health = health;
-		if(this.health <= 0) {
+		if(this.health <= 0) { // updating flag
 			this.isAlive = false;
 		}
 	}
@@ -77,7 +74,7 @@ public class Character extends Sprite {
     	return this.isGrounded;
     } 
     
- // Methods to change the character's sprite
+    // methods to change the character's sprite
     public void faceRight() {
         this.setImage(rightImage);
     }
@@ -85,13 +82,4 @@ public class Character extends Sprite {
     public void faceLeft() {
         this.setImage(leftImage);
     }
-
-    
-//    void updateXPos() {
-//    	this.xPos += CHARACTER_SPEEDX;
-//    }
-//    
-//    double getXPos() {
-//    	return(this.xPos);
-//    }
 }
