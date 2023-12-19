@@ -12,11 +12,9 @@ public class Character extends Sprite {
 	private int health;
 	public double xPos;
 	
-
-	// spawn point
-
 	public boolean isColliding; // collision property
 	
+	// spawn point
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
 	
@@ -42,7 +40,7 @@ public class Character extends Sprite {
 		this.isAlive = true;
 		this.score = INIT_SCORE;
 		this.isGrounded = false;
-		this.health = 100;
+		this.health = 1000;
 		this.xPos = INITIAL_X;
 		this.rightImage = RIGHT_CHAR_IMG; 
 		this.setImage(rightImage);

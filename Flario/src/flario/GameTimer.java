@@ -106,7 +106,7 @@ public class GameTimer extends AnimationTimer {
         this.checkBuff(currentNanoTime);
 	    
         // checker for stopping criteria
-        if(GameTimer.gameOver || !this.character.isAlive()) {
+        if(GameTimer.gameOver || !this.character.isAlive() || this.level.finishDistance <= 0) {
         	this.stop();
         	endCountdown();
         	if(!this.character.isAlive()) { // gameover/lost
@@ -117,10 +117,7 @@ public class GameTimer extends AnimationTimer {
         	}
         }
 	    
-	if(this.level.finishDistance <= 0) {
-        	/* Insert victory screen code here */
-        }
-    }
+	}
     
     // redrawing the contents of the canvas
     void redrawBackgroundImage() {
@@ -141,10 +138,8 @@ public class GameTimer extends AnimationTimer {
         if(this.backgroundX>=GameStage.WINDOW_WIDTH) 
         	this.backgroundX = GameStage.WINDOW_WIDTH-this.background.getWidth();
     }
-    
 
     // method for rendering the sprites
-
     void renderSprites() {
     	// draw character
       
@@ -298,7 +293,6 @@ public class GameTimer extends AnimationTimer {
 			this.level.finishDistance += SCREEN_MOVE_SPEED;
 		}
 	}
-
   
     // method for buff spawning
 	void checkBuff(long currentNanoTime) {
@@ -433,7 +427,6 @@ public class GameTimer extends AnimationTimer {
             }
         });
     }
-	
 
 	// method for updating gametime (minigame)
 	public static void setGameTime(int time) { //adding collected time to game time
