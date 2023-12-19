@@ -143,6 +143,11 @@ public class GameStage {
 			gameplayer = null;
 		}
 		
+		if(bgplayer != null) {
+			bgplayer.stop();
+			bgplayer = null;
+		}
+		
 		gameover = new MediaPlayer(GameStage.GAMEOVER);
 		gameover.setVolume(0.18);
 		gameover.setCycleCount(1); 

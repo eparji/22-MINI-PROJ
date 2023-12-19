@@ -18,7 +18,7 @@ public class Character extends Sprite {
 //	private final static Image CHARACTER_IMAGE = new Image("images/character.png", 64, 64, false, false);
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
-	public final static double CHARACTER_SPEEDY = 6;
+	public final static double CHARACTER_SPEEDY = 5;
 	public final static double CHARACTER_SPEEDX = 3;
 	public final static double CHARACTER_WIDTH = 64;
 	public final static double CHARACTER_HEIGHT = 64;
