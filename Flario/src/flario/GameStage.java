@@ -41,6 +41,7 @@ public class GameStage {
 	private static MediaPlayer gameplayer;
 	private static MediaPlayer minigameplayer;
 	private static MediaPlayer gameover;
+	private static MediaPlayer gamewon;
 	
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
@@ -55,6 +56,7 @@ public class GameStage {
     private final static Media BG_MUSIC = new Media(GameStage.class.getResource("/music/menu-theme.mp3").toExternalForm());
     private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
     private final static Media GAMEOVER = new Media(GameStage.class.getResource("/music/flario-gameover.mp3").toExternalForm());
+    private final static Media GAMEWON = new Media(GameStage.class.getResource("/music/flario-gamewon.mp3").toExternalForm());
     
     public final static Font FONT_8BIT;
     
@@ -92,6 +94,16 @@ public class GameStage {
 			gameplayer = null;
 		}
 		
+		if(gameover != null) {
+			gameover.stop();
+			gameover = null;
+		}
+		
+		if(gamewon != null) {
+			gamewon.stop();
+			gamewon = null;
+		}
+		
 	    bgplayer = new MediaPlayer(GameStage.BG_MUSIC);
 	    bgplayer.setVolume(0.22);
 	    bgplayer.setCycleCount(MediaPlayer.INDEFINITE); // Play the music indefinitely
@@ -114,6 +126,11 @@ public class GameStage {
 		if(gameover != null) {
 			gameover.stop();
 			gameover = null;
+		}
+		
+		if(gamewon != null) {
+			gamewon.stop();
+			gamewon = null;
 		}
 		
 		gameplayer = new MediaPlayer(GameStage.GAME_MUSIC);
@@ -148,12 +165,41 @@ public class GameStage {
 			bgplayer = null;
 		}
 		
+		if(gamewon != null) {
+			gamewon.stop();
+			gamewon = null;
+		}
+		
 		gameover = new MediaPlayer(GameStage.GAMEOVER);
 		gameover.setVolume(0.18);
 		gameover.setCycleCount(1); 
 		gameover.play();
-		
 	}
+	
+	// method that plays the gameover music when timer runs out
+		static void playgamewon()
+		{
+			if(gameplayer != null) {
+				gameplayer.stop();
+				gameplayer = null;
+			}
+			
+			if(bgplayer != null) {
+				bgplayer.stop();
+				bgplayer = null;
+			}
+			
+			if(gameover != null) {
+				gameover.stop();
+				gameover = null;
+			}
+			
+			gamewon = new MediaPlayer(GameStage.GAMEWON);
+			gamewon.setVolume(0.18);
+			gamewon.setCycleCount(1); 
+			gamewon.play();
+			
+		}
 	
 	private void initSplash(Stage stage) {
 		StackPane root = new StackPane();
@@ -222,7 +268,7 @@ public class GameStage {
 	    return(root);
 	}
 	
-	private static void initGameOver(int score, int time) {
+	private static void initGameOver(int score, int time, int type) {
 	    Pane gameover = new Pane();
 	    VBox texts = new VBox();
 	    
@@ -260,7 +306,11 @@ public class GameStage {
 	    
 	    buttons.getChildren().addAll(trybtn, retmain);
 	    
-	    gameover.getChildren().addAll(createCanvas("gameover.png"), texts, buttons);
+	    String filepath;
+	    if(type == 1) filepath = "gameover.png";
+	    else filepath = "gamewon.png";
+	    
+	    gameover.getChildren().addAll(createCanvas(filepath), texts, buttons);
 	    
 	    Platform.runLater(() -> {
 	        // Position the VBox at the bottom center of the Pane
@@ -301,9 +351,10 @@ public class GameStage {
 		stage.setScene(this.instScene);
 	}
 	
-	static void showGameOver(int score, int time) {
-		playgameover();
-		initGameOver(score, time);       // initializes gameover scene
+	static void showGameOver(int score, int time, int type) {
+		if(type == 1) playgameover();
+		else playgamewon();
+		initGameOver(score, time, type);       // initializes gameover scene
 		stage.setScene(gameoverScene);
 	}
 	

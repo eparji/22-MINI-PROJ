@@ -10,12 +10,9 @@ import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 public class GameTimer extends AnimationTimer {
@@ -93,12 +90,13 @@ public class GameTimer extends AnimationTimer {
         this.handleCollision();
         this.moveSprites();
         this.drawScore();
-        
-        if(!this.character.isAlive() || GameTimer.gameOver || Level.isFinished()) {
+//        System.out.println(Level.isFinished(this.character.getXPos()));
+        if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
-        	GameStage.showGameOver(this.character.getScore(), gameTime);
-       	}
+        	if(!this.character.isAlive()) GameStage.showGameOver(this.character.getScore(), gameTime, 1);
+        	else GameStage.showGameOver(this.character.getScore(), gameTime, 0);
+        }
     }
     
     void redrawBackgroundImage() {
@@ -127,7 +125,6 @@ public class GameTimer extends AnimationTimer {
 //        System.out.println("Background X: " + this.backgroundX);
     }
     
-      
     void renderSprites() {
     	// draw guardian
         this.character.render(this.gc);
@@ -337,6 +334,7 @@ public class GameTimer extends AnimationTimer {
 			}
 		}
 		else if(GameTimer.goRight) {
+//			this.character.updateXPos();
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
 				GameTimer.moveScreenRight = false;
@@ -382,6 +380,7 @@ public class GameTimer extends AnimationTimer {
 			}
 		}
 		else if(GameTimer.goRight) {
+//			this.character.updateXPos();
 			if(this.character.getPositionX() >= RIGHT_EDGE) {
 				GameTimer.moveScreenLeft = true;
 				GameTimer.moveScreenRight = false;
