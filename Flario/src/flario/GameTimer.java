@@ -162,7 +162,7 @@ public class GameTimer extends AnimationTimer {
         this.moveObstacle();
     }
 	
-	/*
+	
     // added methods
     void autoSpawn(long currentNanoTime) {
     	double spawnElapsedTime = (currentNanoTime - this.startSpawn) / 1000000000.0;
@@ -201,11 +201,7 @@ public class GameTimer extends AnimationTimer {
 		
 
 	}
-<<<<<<< HEAD
-=======
-    */
->>>>>>> refs/remotes/origin/RseanPNG-patch-2
-    
+  
     private void movePipe() {
 		for(int i = 0; i < this.pipes.size(); i++){
 			Pipe pipe = this.pipes.get(i);
@@ -220,6 +216,7 @@ public class GameTimer extends AnimationTimer {
 			else if(moveScreenLeft) {
 				pipe.setVelocityX(-SCREEN_MOVE_SPEED);
 				topPipe.setVelocityX(-SCREEN_MOVE_SPEED);
+
 			}
 			else {
 
@@ -242,7 +239,6 @@ public class GameTimer extends AnimationTimer {
 			else {
 				block.setVelocityX(0);
 			}
-			
 			block.updatePosition();
 		}
 	}
@@ -463,6 +459,20 @@ public class GameTimer extends AnimationTimer {
 				}
 			}
 		}
+		
+		for(int i = 0; i < this.blocks.size(); i++){
+			Block block = this.blocks.get(i);
+			
+			block.drawBounds(gc);
+			
+			if(block.collidesWith(this.character)) {
+				this.character.setVelocityX(0);
+				this.character.setVelocityY(0);
+				if(this.character.getPositionY() < block.getPositionY()) {
+					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
+				}
+			}
+		}
 	}
 	
 	// implements a counting down mechanism
@@ -535,18 +545,5 @@ public class GameTimer extends AnimationTimer {
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Score: " + computeScore(), 500, 30);
 	}
-	
-//	private void drawGameOver() {
-//		this.stop();
-//		GameTimer.gameOver = true;
-////		this.gc.setFont(GameStage.FONT_8BIT);
-////	    this.gc.setFill(Color.WHITE);
-////	    this.gc.fillText("GAME OVER!", (GameStage.WINDOW_WIDTH/3), (GameStage.WINDOW_HEIGHT/2));
-////	    
-////	    Button btn = new Button("Retry");
-////	    btn.setLayoutX(GameStage.WINDOW_WIDTH/2); // Set the X position of the button
-////	    btn.setLayoutY(GameStage.WINDOW_HEIGHT/2); // Set the Y position of the button
-//		GameStage.showGameOver(this.character.getScore(), gameTime);
-//	}
 	
 }
