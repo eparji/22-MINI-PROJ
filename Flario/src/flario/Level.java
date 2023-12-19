@@ -16,16 +16,16 @@ public class Level {
 	public int[][] groundIntervals = new int[50][2]; 
 	public int[][] flyingIntervals = new int[50][2];
 	public int groundIntervalCounter, flyingIntervalCounter;
-	public static int finishDistance;
+	public int finishDistance;
 	
 	private final static int LEVEL_LENGTH = 5120; //10240;
 	private final static int OBSTACLE_INTERVAL = 256;
-	private final static int PIPE_DISTANCE = 750;
+	private final static int PIPE_DISTANCE = 704;
 	private final static int BUFF_HEIGHT = 64;
 	private final static int BUFF_RARITY = 10; // must be at least 4
 	
 	public Level() {
-		Level.finishDistance = LEVEL_LENGTH;
+		this.finishDistance = LEVEL_LENGTH;
 		this.groundIntervalCounter = 0;
 		this.flyingIntervalCounter = 0;
     		this.pipes = new ArrayList<Pipe>();
