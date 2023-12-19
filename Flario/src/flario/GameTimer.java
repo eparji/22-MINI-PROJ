@@ -135,6 +135,7 @@ public class GameTimer extends AnimationTimer {
     	else {
     		this.character.faceLeft();
     	}
+      
         this.character.render(this.gc);
         
         // draw Sprites in ArrayLists
