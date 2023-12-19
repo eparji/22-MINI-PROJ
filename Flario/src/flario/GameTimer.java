@@ -25,10 +25,15 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean moveScreenLeft, moveScreenRight;
 	private static boolean isTouchingGround;
+	private boolean incentiveBuff, moduleBuff, stackBuff, alreadyBuffed, changeMode;
 	
 	private ArrayList<Pipe> pipes;
 	private ArrayList<Pipe> topPipes;
 	private ArrayList<Block> blocks;
+	private ArrayList<Module> modules;
+	private ArrayList<Incentive> incentives;
+	private ArrayList<StackOverflow> stacks;
+	private ArrayList<ChangeMode> change;
 	
 	private static boolean gameOver;
 	private Timeline timeline;
@@ -54,6 +59,7 @@ public class GameTimer extends AnimationTimer {
 	public final static int BACKGROUND_SPEED = 1;
 	public final static int SCREEN_MOVE_SPEED = 2;
 	public final static int COLLISION_BUFFER = 16;
+	public final static double BUFF_DURATION = 5;
 	
 	// added
 	public final static int WIDTH_PER_PIPE = 80;
@@ -73,6 +79,10 @@ public class GameTimer extends AnimationTimer {
     	this.pipes = this.level.pipes;
     	this.topPipes = this.level.topPipes;
     	this.blocks = this.level.blocks;
+    	this.modules = this.level.modules;
+    	this.incentives = this.level.incentives;
+    	this.stacks = this.level.stacks;
+    	this.change = this.level.change;
     	
     	// game duration
     	GameTimer.gameTime = 90;
@@ -91,6 +101,8 @@ public class GameTimer extends AnimationTimer {
         this.handleCollision();
         this.moveSprites();
         this.drawScore();
+        this.checkBuff(currentNanoTime);
+	    
         if(GameTimer.gameOver || !this.character.isAlive()) {
         	this.stop();
         	endCountdown();
@@ -146,6 +158,22 @@ public class GameTimer extends AnimationTimer {
         for(Block block : this.blocks) {
         	block.render(this.gc);
         }
+	    
+        for(Module module : this.modules) {
+        	module.render( this.gc );
+        }
+        
+        for(Incentive incentive : this.incentives) {
+        	incentive.render( this.gc );
+        }
+        
+        for(StackOverflow stack : this.stacks) {
+        	stack.render( this.gc );
+        }
+        
+        for(ChangeMode changeMode : this.change) {
+        	changeMode.render( this.gc );
+        }
     }
     
     void moveSprites() {
@@ -196,8 +224,135 @@ public class GameTimer extends AnimationTimer {
 			}
 			block.updatePosition();
 		}
+	    
+		for(int i = 0; i < this.modules.size(); i++){
+			Module module = this.modules.get(i);
+			if(moveScreenRight) {
+				module.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				module.setVelocityX(-SCREEN_MOVE_SPEED);
+			}
+			else {
+				module.setVelocityX(0);
+			}
+			module.updatePosition();
+		}
+		
+		for(int i = 0; i < this.incentives.size(); i++){
+			Incentive incentive = this.incentives.get(i);
+			if(moveScreenRight) {
+				incentive.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				incentive.setVelocityX(-SCREEN_MOVE_SPEED);
+			}
+			else {
+				incentive.setVelocityX(0);
+			}
+			incentive.updatePosition();
+		}
+		
+		for(int i = 0; i < this.stacks.size(); i++){
+			StackOverflow stack = this.stacks.get(i);
+			if(moveScreenRight) {
+				stack.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				stack.setVelocityX(-SCREEN_MOVE_SPEED);
+			}
+			else {
+				stack.setVelocityX(0);
+			}
+			stack.updatePosition();
+		}
+		
+		for(int i = 0; i < this.change.size(); i++){
+			ChangeMode change = this.change.get(i);
+			if(moveScreenRight) {
+				change.setVelocityX(SCREEN_MOVE_SPEED);
+			}
+			else if(moveScreenLeft) {
+				change.setVelocityX(-SCREEN_MOVE_SPEED);
+			}
+			else {
+				change.setVelocityX(0);
+			}
+			change.updatePosition();
+		}
 	}
-    
+
+	void checkBuff(long currentNanoTime) {
+    	//random buff every 5 pipes
+    	
+			if(incentiveBuff == true) {//spawn incentive buff
+				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
+				
+				
+				this.alreadyBuffed = true;
+				this.gc.fillText("Gained incentive buff!", 600, 60);
+		
+				
+				if(buffElapsedTime > BUFF_DURATION) {
+					
+					this.incentiveBuff = false;
+					this.alreadyBuffed = false;
+					this.buffTime = System.nanoTime();
+					this.gc.fillText("Incentive buff is gone!", 600, 60);
+				}
+			}
+			
+			else if(moduleBuff == true){//spawn module buff
+				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
+				
+				
+				if(this.alreadyBuffed == false) {
+					this.character.width = this.character.width / 1.6;
+					this.character.height = this.character.height / 1.6;
+					
+					this.alreadyBuffed = true;
+					this.gc.fillText("Gained module buff!", 600, 60);
+					this.character.loadImage(new Image(Character.class.getResource("/sprites/character.png").toString(), this.character.width, this.character.height, false, false));
+				}
+				
+				if(buffElapsedTime > BUFF_DURATION) {
+					
+					this.character.width = this.character.width * 1.6;
+					this.character.height = this.character.height * 1.6;
+					this.gc.fillText("Module buff is gone!", 600, 60);
+					this.moduleBuff = false;
+					this.alreadyBuffed = false;
+					this.buffTime = System.nanoTime();
+					this.character.loadImage(new Image(Character.class.getResource("/sprites/character.png").toString(), this.character.width, this.character.height, false, false));	
+				}
+			}
+			else if(stackBuff == true){//spawn minigame buff
+				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
+				//start minigame
+				
+				this.alreadyBuffed = true;
+				this.gc.fillText("Gained stack overflow buff!", 600, 60);
+				
+				//tentative mini game trigger (must be triggered by stack overflow buff)
+            			MiniWindow minigame = new MiniWindow(); //launch mini game
+            			minigame.start();
+            			GameTimer.pauseTimerForDuration(getTimer(), Duration.seconds(5)); //pause main game for 5 secs
+				
+				this.stackBuff = false;
+				this.alreadyBuffed = false;
+				this.gc.fillText("Stack Overflow buff is gone!", 600, 60);
+			}
+			else if(changeMode == true) {//change mode
+				
+				this.alreadyBuffed = true;
+				this.gc.fillText("Change mode!", 600, 60);
+				
+				
+				this.alreadyBuffed = false;
+				this.gc.fillText("Back to ground!", 600, 60);
+			}
+
+    	}
     /*
      * Catches the left and right key presses for the guardian's movement
      * */
@@ -431,6 +586,59 @@ public class GameTimer extends AnimationTimer {
 			
 			}
 		}
+
+		for(int j = 0; j < this.modules.size(); j++) {
+			Module module = this.modules.get(j);
+					
+			//module.drawBounds(gc);
+					
+			if(module.collidesWith(this.character)) {
+				this.moduleBuff = true;
+				this.buffTime = System.nanoTime();
+				this.modules.remove(j);
+				
+			}	
+		}
+				
+		for(int j = 0; j < this.incentives.size(); j++) {
+			Incentive incentive = this.incentives.get(j);
+					
+			//incentive.drawBounds(gc);
+					
+			if(incentive.collidesWith(this.character)) {
+				this.incentiveBuff = true;
+				this.buffTime = System.nanoTime();
+				this.incentives.remove(j);
+
+			}	
+					
+		}
+				
+		for(int j = 0; j < this.stacks.size(); j++) {
+			StackOverflow stack = this.stacks.get(j);
+					
+			//stack.drawBounds(gc);
+					
+			if(stack.collidesWith(this.character)) {
+				this.stackBuff = true;
+				this.buffTime = System.nanoTime();
+				this.stacks.remove(j);
+			
+			}	
+					
+		}
+		
+		for(int j = 0; j < this.change.size(); j++) {
+			ChangeMode changeMode = this.change.get(j);
+					
+			//changeMode.drawBounds(gc);
+					
+			if(changeMode.collidesWith(this.character)) {
+				this.changeMode = true;
+				this.buffTime = System.nanoTime();
+				this.change.remove(j);
+			}	
+		}
 	}
 	
 	// implements a counting down mechanism
@@ -504,7 +712,6 @@ public class GameTimer extends AnimationTimer {
 		if(score >= 60) return("2.75");
 		if(score >= 55) return("3.00");
 		else return("5.00");
-		
 	}
 	
 	private void printScore() {
