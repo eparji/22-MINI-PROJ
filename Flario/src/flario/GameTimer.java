@@ -40,7 +40,8 @@ public class GameTimer extends AnimationTimer {
 	
 	private static boolean gameOver;
 	private Timeline timeline;
-
+	private int changeCount;
+	
 	private double backgroundX;
 	private Image background = new Image( "background.png", 1280, 720, false, false);
 
@@ -84,7 +85,7 @@ public class GameTimer extends AnimationTimer {
     	this.incentives = this.level.incentives;
     	this.stacks = this.level.stacks;
     	this.change = this.level.change;
-    	
+    	this.changeCount = 0;
     	// game duration
     	GameTimer.gameTime = 90;
     	GameTimer.elapsedTime = 0;
@@ -296,19 +297,25 @@ public class GameTimer extends AnimationTimer {
   
     // method for buff spawning
 	void checkBuff(long currentNanoTime) {
+		
+		this.gc.setFill(Color.BLACK);
+		
     	//random buff every 5 pipes
 			if(incentiveBuff == true) {//spawn incentive buff
+				Random r = new Random();
 				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
 				
 				this.alreadyBuffed = true;
 				this.gc.fillText("Gained incentive buff!", 600, 100);
 				
+				int add = r.nextInt(1, 5);
+				
 				if(buffElapsedTime > BUFF_DURATION) {
-					
 					this.incentiveBuff = false;
 					this.alreadyBuffed = false;
 					this.buffTime = System.nanoTime();
-					this.gc.fillText("Incentive buff is gone!", 600, 100);
+					this.character.setHealth(this.character.getHealth() + add);
+					this.gc.fillText("Gained +" + add + "health!", 600, 100);
 				}
 			}
 			
@@ -317,11 +324,10 @@ public class GameTimer extends AnimationTimer {
 				
 				if(this.alreadyBuffed == false) {
 					this.character.width = this.character.width / 1.6;
-					this.character.height = this.character.height / 1.6;
+					this.character.width = this.character.height / 1.6;
 					
 					this.alreadyBuffed = true;
 					this.gc.fillText("Gained module buff!", 600, 60);
-					this.character.loadImage(new Image(Character.class.getResource("/right-char.png").toString(), this.character.width, this.character.height, false, false));
 				}
 				
 				if(buffElapsedTime > BUFF_DURATION) {
@@ -332,8 +338,11 @@ public class GameTimer extends AnimationTimer {
 					this.moduleBuff = false;
 					this.alreadyBuffed = false;
 					this.buffTime = System.nanoTime();
-					this.character.loadImage(new Image(Character.class.getResource("/right-char.png").toString(), this.character.width, this.character.height, false, false));	
 				}
+				
+				if(goLeft) this.character.faceLeft(this.character.width, this.character.width);
+				if(goRight) this.character.faceRight(this.character.width, this.character.width);
+				this.character.loadImage(this.character.image);
 			}
 			
 			else if(stackBuff == true){//spawn minigame buff
@@ -353,12 +362,21 @@ public class GameTimer extends AnimationTimer {
 			}
 			else if(changeMode == true) {//change mode
 				
-				this.alreadyBuffed = true;
-				this.gc.fillText("Change mode!", 600, 100);
+				this.changeCount++;
+				
+				if(this.changeCount == 1) {
+					this.alreadyBuffed = true;
+					this.gc.fillText("Change mode!", 600, 100);
+					
+				}
+				
+				if(this.changeCount == 2) {
+					this.alreadyBuffed = false;
+					this.gc.fillText("Back to ground!", 600, 100);
+					this.changeCount = 0;
+				}
 				
 				
-				this.alreadyBuffed = false;
-				this.gc.fillText("Back to ground!", 600, 100);
 			}
 
     	}
@@ -659,7 +677,6 @@ public class GameTimer extends AnimationTimer {
 	    timeline.setCycleCount(gameTime);
 	    timeline.play();
 	}
-	
 
 	// method for stopping the timeline
 	private void endCountdown() {
