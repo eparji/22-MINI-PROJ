@@ -45,7 +45,6 @@ public class GameTimer extends AnimationTimer {
     
 	
 //>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
-	private Pipe pipe;
 	private static int gameTime;
 	private static int elapsedTime;
 	
@@ -112,9 +111,8 @@ public class GameTimer extends AnimationTimer {
         this.gc.drawImage( background, this.backgroundX, 0);
         
         // hitbox debug code
-        this.gc.strokeLine(1280, GROUND_POSITION, 0, GROUND_POSITION);
-        this.gc.strokeRect(character.getBounds().getMinX(), character.getBounds().getMinY(), character.getBounds().getWidth(), character.getBounds().getHeight());
-        this.gc.strokeRect(pipe.getBounds().getMinX(), pipe.getBounds().getMinY(), pipe.getBounds().getWidth(), pipe.getBounds().getHeight());
+        // this.gc.strokeLine(1280, GROUND_POSITION, 0, GROUND_POSITION);
+        // this.character.drawBounds(gc);
         
         //reset background x pos to loop background
         if(this.backgroundX <= -this.background.getWidth() && this.backgroundX % this.background.getWidth() == 0) {
@@ -156,9 +154,6 @@ public class GameTimer extends AnimationTimer {
     		this.moveCharacterFlying();
     	}
         this.movePipe();
-    	
-        this.moveCharacter();
-       
     }
 	
     // added methods
@@ -389,8 +384,8 @@ public class GameTimer extends AnimationTimer {
 			Pipe pipe = this.pipes.get(i);
 			Pipe topPipe = this.topPipes.get(i);
 			
-			pipe.drawBounds(gc);
-			topPipe.drawBounds(gc);
+			//pipe.drawBounds(gc);
+			//topPipe.drawBounds(gc);
 			
 			if(pipe.collidesWith(this.character) || topPipe.collidesWith(this.character)) {
 				this.character.setHealth(this.character.getHealth()-25);
@@ -426,42 +421,7 @@ public class GameTimer extends AnimationTimer {
 	    timeline[0].setCycleCount(gameTime);
 	    timeline[0].play();
 	}
-	
-	/*
-     * Gets called in handle() to move the guardian based on the goLeft and goRight flags
-     * */
-	private void moveCharacter() {
-		
-		  if (GameTimer.goLeft) {
-			  this.character.setVelocityX(-Character.CHARACTER_SPEEDX); //move left
-		  }else if(GameTimer.goRight) {
-			  this.character.setVelocityX(Character.CHARACTER_SPEEDX); //move right
-		  }
-		  else {
-			  this.character.setVelocityX(0); //stop moving
-		  }
-		  
-		  if(GameTimer.goUp && this.character.getPositionY() >= GROUND_POSITION - character.getHeight()) {
-			  this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
-		  }else {//go down
-			  this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
-			  
-			  if(this.character.getPositionY() > GROUND_POSITION - character.getHeight()) {
-				  this.character.setPositionXY(this.character.getPositionX(), GROUND_POSITION - character.getHeight());
-				  this.character.setVelocityY(0);
-			  }
-			  GameTimer.goUp = false;
-			  
-		  }
-		  
-		  //if(GameTimer.goDown){
-			  //this.character.setDY(+Character.CHARACTER_SPEEDY);
-		  //}
-		  
-		  this.character.updatePosition();
-		 
-        
-	}
+
 	
 	// logic behind remaining time printing
 	private String computeTime() {
