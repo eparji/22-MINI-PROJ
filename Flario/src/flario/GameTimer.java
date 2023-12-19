@@ -22,6 +22,7 @@ public class GameTimer extends AnimationTimer {
 	private Level level;
 	
 	// added
+	private long buffTime;
 	private static boolean goUp, goDown, goLeft, goRight;
 	private static boolean moveScreenLeft, moveScreenRight;
 	private static boolean isTouchingGround;
