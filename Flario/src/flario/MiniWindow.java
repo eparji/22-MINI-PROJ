@@ -27,6 +27,7 @@ public class MiniWindow extends AnimationTimer{
 	
 	public final static int TIME_TYPES = 4;
 	
+	// creates an instance of the miniwindow bject
 	public MiniWindow(){
 		this.root = new Group();
 		this.scene = new Scene(root,this.background.getWidth(),this.background.getHeight());
@@ -36,6 +37,7 @@ public class MiniWindow extends AnimationTimer{
     	this.setStage();
 	}
 	
+	// prints out the time/clickables
 	private void renderTime() {
 		 Iterator<TimeIncrement> timeIter = collectibles.iterator();
          while ( timeIter.hasNext() )
@@ -45,6 +47,7 @@ public class MiniWindow extends AnimationTimer{
          }
 	}
 	
+	// method for spawning (i.e. placing, typing)
 	private void spawnTime(){
 		double xPos, yPos;
 		int type;
@@ -52,33 +55,34 @@ public class MiniWindow extends AnimationTimer{
 		this.collectibles= new ArrayList<TimeIncrement>();
 		
 		int timeCount = 20;
-		for(int i=0;i<timeCount;i++){
+		for(int i=0;i<timeCount;i++){ // twenty collectibles spawn 
 			
-			type = r.nextInt(MiniWindow.TIME_TYPES);
-
-			xPos = r.nextDouble(this.scene.getWidth());
-			yPos = r.nextDouble(this.scene.getHeight());
-			TimeIncrement newCollect = new TimeIncrement(xPos, yPos, type);
-			this.collectibles.add(newCollect);
+			type = r.nextInt(MiniWindow.TIME_TYPES); // gets time type(1,2,3,5)
+			xPos = r.nextDouble(this.scene.getWidth()); // obtains xpos
+			yPos = r.nextDouble(this.scene.getHeight());// ypos
+			TimeIncrement newCollect = new TimeIncrement(xPos, yPos, type); // places clickable
+			this.collectibles.add(newCollect); // adds to arraylist
 		}
 	}
 	
+	// sets stage for the miniwindow
 	public void setStage() {
 		this.root.getChildren().add(this.canvas);
-		this.stage.setTitle("Mini Game na !!");
-		this.stage.setScene(this.scene);
+		this.stage.setTitle("Mini Game na !!"); // title of window
+		this.stage.setScene(this.scene); 
 		this.addComponents();
-		this.scene.getRoot().requestFocus();
-		GameStage.playminigamemusic();
+		this.scene.getRoot().requestFocus(); // focuses on window
+		GameStage.playminigamemusic(); // plays minigame music
 		this.stage.show();
-		PauseTransition delay = new PauseTransition(Duration.seconds(5));
+		PauseTransition delay = new PauseTransition(Duration.seconds(5)); // pauses gametimer for 5 seconds
 		delay.play();
-		delay.setOnFinished(event -> {
+		delay.setOnFinished(event -> { // closes window after 5 seconds
 			this.stage.close();
 			GameStage.playgamemusic();
 		});
 	}
 	
+	// handler for spawning and eventhandler for being clicked
 	private void setHandler() {
         Iterator<TimeIncrement> colIter = this.collectibles.iterator();
         while ( colIter.hasNext() ){
@@ -94,9 +98,11 @@ public class MiniWindow extends AnimationTimer{
             }
 	}
 	
+	// checker
 	private void pressed(String msg, TimeIncrement btn) {
 		// TODO Auto-generated method stub
 		if(msg.contentEquals("clicked")) {
+			System.out.println("Added a total of " + btn.getIncrement() + " seconds to gametime already");
 			this.root.getChildren().remove(btn);
 			this.increaseTime(btn.getIncrement());
 		}
