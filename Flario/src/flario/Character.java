@@ -12,7 +12,11 @@ public class Character extends Sprite {
 	private int health;
 	public double xPos;
 	
+
 	// spawn point
+
+	public boolean isColliding; // collision property
+	
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
 	
@@ -33,7 +37,6 @@ public class Character extends Sprite {
 	private ImageView imageView;
 	private Image rightImage; // The right-facing sprite
 	private Image leftImage; // The left-facing sprite
-
     
 	Character(String name){
        	super(Character.INITIAL_X, Character.INITIAL_Y, Character.CHARACTER_WIDTH, Character.CHARACTER_HEIGHT, Character.RIGHT_CHAR_IMG);
@@ -43,7 +46,8 @@ public class Character extends Sprite {
 		this.isGrounded = false;
 		this.health = 100;
 		this.xPos = INITIAL_X;
-		
+
+//		this.isColliding = false;
 
 		this.imageView = new ImageView(RIGHT_CHAR_IMG);
 	}
@@ -66,7 +70,7 @@ public class Character extends Sprite {
 	
 	public void setHealth(int health) {
 		this.health = health;
-		if(this.health <= 0) {
+		if(this.health <= 0) { // updating flag
 			this.isAlive = false;
 		}
 	}

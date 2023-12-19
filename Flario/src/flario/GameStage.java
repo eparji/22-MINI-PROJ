@@ -7,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,15 +27,16 @@ import javafx.stage.Stage;
 
 public class GameStage {
 	private static Stage stage;
-	private static Scene splashScene;		// the splash scene
+	private static Scene splashScene;	// the splash scene
 	private static Scene gameScene;		// the game scene
-	private Scene aboutScene;       // the scene showing devs and references
-	private Scene instScene;        // the scene showing the how to's of the game
-	private static Scene gameoverScene;
+	private Scene aboutScene;      	 	// the scene showing devs and references
+	private Scene instScene;        	// the scene showing the how to's of the game
+	private static Scene gameoverScene;	// the scene showing the gameover splash
 	
 	private Group root;
 	private static Canvas canvas;			// the canvas where the animation happens
 	
+	// mediaplayers for background music
 	private static MediaPlayer bgplayer;
 	private static MediaPlayer gameplayer;
 	private static MediaPlayer minigameplayer;
@@ -46,20 +46,22 @@ public class GameStage {
 	public final static int WINDOW_WIDTH = 1280;
 	public final static int WINDOW_HEIGHT = 720;
 	
+	// stylizing buttons
     private final static String BUTTONSTYLE = "-fx-background-color:transparent;"
     										 + "-fx-padding:0;"
     										 + "-fx-background-size:0;"
     										 + "-fx-pref-width: 400;"  // Set the preferred width
     	                                     + "-fx-pref-height: 50;"; // Set the preferred height
     
+    // importing the mp3files
     private final static Media GAME_MUSIC = new Media(GameStage.class.getResource("/music/flario-theme.mp3").toExternalForm());
     private final static Media BG_MUSIC = new Media(GameStage.class.getResource("/music/menu-theme.mp3").toExternalForm());
     private final static Media MINIGAME = new Media(GameStage.class.getResource("/music/flario-minigame.mp3").toExternalForm());
     private final static Media GAMEOVER = new Media(GameStage.class.getResource("/music/flario-gameover.mp3").toExternalForm());
     private final static Media GAMEWON = new Media(GameStage.class.getResource("/music/flario-gamewon.mp3").toExternalForm());
     
+    // importing font to be used in the program
     public final static Font FONT_8BIT;
-    
     static {
         InputStream is = GameStage.class.getResourceAsStream("/PressStart2P-Regular.ttf");
         FONT_8BIT = Font.loadFont(is, 20);
@@ -81,8 +83,8 @@ public class GameStage {
 		this.initAbout(stage);          // initializes the About Screen with return to main menu button
 		this.initInst(stage);           // initializes Instruction scene
 		
-		stage.setScene( splashScene );
-        stage.setResizable(false);
+		stage.setScene(splashScene);    // initial scene is main menu
+        stage.setResizable(false);		// non-resizable window
         playbgmusic();                  // plays background music 
 		stage.show();
 	}
@@ -139,6 +141,7 @@ public class GameStage {
 		gameplayer.play();
 	}
 	
+	// method that plays minigame music when its window pops up
 	static void playminigamemusic()
 	{
 		if(gameplayer != null) {
@@ -177,30 +180,31 @@ public class GameStage {
 	}
 	
 	// method that plays the gameover music when timer runs out
-		static void playgamewon()
-		{
-			if(gameplayer != null) {
-				gameplayer.stop();
-				gameplayer = null;
-			}
-			
-			if(bgplayer != null) {
-				bgplayer.stop();
-				bgplayer = null;
-			}
-			
-			if(gameover != null) {
-				gameover.stop();
-				gameover = null;
-			}
-			
-			gamewon = new MediaPlayer(GameStage.GAMEWON);
-			gamewon.setVolume(0.18);
-			gamewon.setCycleCount(1); 
-			gamewon.play();
-			
+	static void playgamewon()
+	{
+		if(gameplayer != null) {
+			gameplayer.stop();
+			gameplayer = null;
 		}
+		
+		if(bgplayer != null) {
+			bgplayer.stop();
+			bgplayer = null;
+		}
+		
+		if(gameover != null) {
+			gameover.stop();
+			gameover = null;
+		}
+		
+		gamewon = new MediaPlayer(GameStage.GAMEWON);
+		gamewon.setVolume(0.18);
+		gamewon.setCycleCount(1); 
+		gamewon.play();
+		
+	}
 	
+	// initializes main menu/splashScene
 	private void initSplash(Stage stage) {
 		StackPane root = new StackPane();
         root.getChildren().addAll(GameStage.createCanvas("mainmenu-bg.png"),this.createVBox());
@@ -233,9 +237,7 @@ public class GameStage {
 		ScrollPane inst = new ScrollPane();
 		this.instScene = new Scene(inst,GameStage.WINDOW_WIDTH,GameStage.WINDOW_HEIGHT);
         inst.setContent(this.createInstPane());
-        
-        inst.setContent(this.createInstPane());
-        inst.requestFocus(); // Request focus on the ScrollPane
+        inst.requestFocus(); // request focus on the ScrollPane
 	}
 	
 	// creates a pane object containing the contents of the scroll pane for the scene
@@ -268,17 +270,18 @@ public class GameStage {
 	    return(root);
 	}
 	
+	// gameover scene depends on what type of gameover user has gotten
 	private static void initGameOver(String score, int time, int type) {
 	    Pane gameover = new Pane();
 	    VBox texts = new VBox();
 	    
-	    // Create Text objects for score and time
+	    // create Text objects for score and time
 	    Text standingText = new Text("Final Standing:\n");
 	    Text standing = new Text(score);
 	    Text timeText = new Text("\nTime Remaining:\n");
 	    Text seconds = new Text(time + " seconds");
 
-	    // Style the Text objects if needed
+	    // style the Text objects if needed
 	    standingText.setFont(GameStage.FONT_8BIT);
 	    standing.setFont(GameStage.FONT_8BIT);
 	    timeText.setFont(GameStage.FONT_8BIT);
@@ -287,6 +290,7 @@ public class GameStage {
 	    texts.setAlignment(Pos.CENTER); // set alignment of vbox to center
 	    texts.getChildren().addAll(standingText, standing, timeText, seconds);
 	    
+	    // centers texts
 	    texts.layoutXProperty().bind(gameover.widthProperty().subtract(texts.prefWidth(-1)).divide(2));
 	    texts.layoutYProperty().bind(gameover.heightProperty().subtract(texts.prefHeight(-1)).divide(2));
 	    
@@ -315,7 +319,7 @@ public class GameStage {
 	    gameover.getChildren().addAll(createCanvas(filepath), texts, buttons);
 	    
 	    Platform.runLater(() -> {
-	        // Position the VBox at the bottom center of the Pane
+	        // position the buttons at the bottom center of the Pane
 	        buttons.setLayoutX((gameover.getWidth() - buttons.getWidth()) / 2);
 	        buttons.setLayoutY(gameover.getHeight() - buttons.getHeight() - 50); // subtract more to move it up
 	    });
@@ -332,6 +336,7 @@ public class GameStage {
         return canvas;
     }
 	
+	// method for switching scene to game scene
 	static void setGame(Stage stage) {
         stage.setScene(gameScene);	
         GraphicsContext gc = canvas.getGraphicsContext2D();	// we will pass this gc to be able to draw on this Game's canvas
@@ -340,19 +345,26 @@ public class GameStage {
         gameTimer.start();			// this internally calls the handle() method of our GameTimer
 	}	
 	
+	// switching to mainmenu scene
 	static void showMenu(Stage stage) {
 		if(bgplayer == null) playbgmusic();
 		stage.setScene(splashScene);
 	}
 	
+	// switching to dev info scene
 	void devInfo(Stage stage) {
         stage.setScene(this.aboutScene);
 	}
 	
+	// switching to instructions scene
 	void gameInst(Stage stage) {
+		// scroll on top
+		ScrollPane scroll = (ScrollPane) this.instScene.getRoot();
+		scroll.setVvalue(0.0);
 		stage.setScene(this.instScene);
 	}
 	
+	// switching to the corresponding gameover scene
 	static void showGameOver(String score, int time, int type) {
 		if(type == 1) playgameover();
 		else playgamewon();
@@ -365,6 +377,7 @@ public class GameStage {
 		System.exit(0);
 	}
 	
+	// VBox of buttons for main menu
     private VBox createVBox() {
     	VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -403,6 +416,7 @@ public class GameStage {
         return vbox;
     }
     
+    // method for handling button related methods
     private static void setButtonActionsAndStyles(Button button, EventHandler<ActionEvent> actionEvent, String buttonStyle) {
     	button.setStyle(buttonStyle);
     	button.setOnAction(actionEvent);
