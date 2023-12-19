@@ -114,6 +114,10 @@ public class GameTimer extends AnimationTimer {
         		GameStage.showGameOver(computeFinalScore(0), gameTime, 0);
         	}
         }
+	    
+	if(this.level.finishDistance <= 0) {
+        	/* Insert victory screen code here */
+        }
     }
     
     void redrawBackgroundImage() {
@@ -285,6 +289,13 @@ public class GameTimer extends AnimationTimer {
 				change.setVelocityX(0);
 			}
 			change.updatePosition();
+		}
+
+		if(moveScreenLeft) {
+			this.level.finishDistance -= SCREEN_MOVE_SPEED;
+		}
+		if(moveScreenRight) {
+			this.level.finishDistance += SCREEN_MOVE_SPEED;
 		}
 	}
 
