@@ -746,12 +746,21 @@ public class GameTimer extends AnimationTimer {
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Remaining Time: " + computeTime(), 20, 30);
+		
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Score: " + computeScore(), 475, 30);
+		
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
 		this.gc.fillText("Health: " + this.character.getHealth(), 20, 60);
+		
+		this.gc.setFont(GameStage.FONT_8BIT);
+		this.gc.setFill(Color.YELLOW);
+		String mode;
+		if(this.character.isGrounded()) mode = "Ground";
+		else mode = "Air";
+		this.gc.fillText("Mode: " + mode, 300, 60);
 	}
 	
 }
