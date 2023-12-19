@@ -268,22 +268,24 @@ public class GameStage {
 	    return(root);
 	}
 	
-	private static void initGameOver(int score, int time, int type) {
+	private static void initGameOver(String score, int time, int type) {
 	    Pane gameover = new Pane();
 	    VBox texts = new VBox();
 	    
 	    // Create Text objects for score and time
-	    Text scoreText = new Text("Score: " + score);
-	    Text timeText = new Text("\nTime Remaining");
+	    Text standingText = new Text("Final Standing:\n");
+	    Text standing = new Text(score);
+	    Text timeText = new Text("\nTime Remaining:\n");
 	    Text seconds = new Text(time + " seconds");
 
 	    // Style the Text objects if needed
-	    scoreText.setFont(GameStage.FONT_8BIT);
+	    standingText.setFont(GameStage.FONT_8BIT);
+	    standing.setFont(GameStage.FONT_8BIT);
 	    timeText.setFont(GameStage.FONT_8BIT);
 	    seconds.setFont(GameStage.FONT_8BIT);
 	    
 	    texts.setAlignment(Pos.CENTER); // set alignment of vbox to center
-	    texts.getChildren().addAll(scoreText, timeText, seconds);
+	    texts.getChildren().addAll(standingText, standing, timeText, seconds);
 	    
 	    texts.layoutXProperty().bind(gameover.widthProperty().subtract(texts.prefWidth(-1)).divide(2));
 	    texts.layoutYProperty().bind(gameover.heightProperty().subtract(texts.prefHeight(-1)).divide(2));
@@ -351,7 +353,7 @@ public class GameStage {
 		stage.setScene(this.instScene);
 	}
 	
-	static void showGameOver(int score, int time, int type) {
+	static void showGameOver(String score, int time, int type) {
 		if(type == 1) playgameover();
 		else playgamewon();
 		initGameOver(score, time, type);       // initializes gameover scene

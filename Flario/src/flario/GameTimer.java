@@ -96,11 +96,10 @@ public class GameTimer extends AnimationTimer {
         	this.stop();
         	endCountdown();
         	if(!this.character.isAlive()) {
-        		GameStage.showGameOver(this.character.getScore(), gameTime, 1);
+        		GameStage.showGameOver(computeFinalScore(1), gameTime, 1);
         	}
         	else {
-        		computeFinalScore();
-        		GameStage.showGameOver(this.character.getScore(), gameTime, 0);
+        		GameStage.showGameOver(computeFinalScore(0), gameTime, 0);
         	}
         }
     }
@@ -532,16 +531,28 @@ public class GameTimer extends AnimationTimer {
 		return(String.format("%d", this.character.getScore()));
 	}
 	
-	private String computeFinalScore() {
+	private String computeFinalScore(int type) {
+		if(type ==1) return("INC");
 		int score = (int) (this.character.getScore() + (gameTime*FINAL_SCORE_MULT));
 		this.character.setScore(score);
-		return(String.format("%d", this.character.getScore()));
+		score = this.character.getScore();
+		
+		if(score >= 95) return("1.00");
+		if(score >= 90) return("1.25");
+		if(score >= 85) return("1.50");
+		if(score >= 80) return("1.75");
+		if(score >= 75) return("2.00");
+		if(score >= 70) return("2.25");
+		if(score >= 65) return("2.50");
+		if(score >= 60) return("2.75");
+		if(score >= 55) return("3.00");
+		else return("5.00");
 		
 	}
 	
 	private void printScore() {
 		System.out.println("TIME LEFT: " + computeTime());
-		System.out.println("USER'S SCORE IS: " + computeScore() + "\n");
+		System.out.println("USER'S GRADE IS: " + computeScore() + "\n");
 	}
 	
 	private void drawScore(){
