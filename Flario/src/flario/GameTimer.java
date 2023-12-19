@@ -147,12 +147,6 @@ public class GameTimer extends AnimationTimer {
 
     void renderSprites() {
     	// draw character
-    	if(GameTimer.goRight) { // sprite image depends on its motion
-    		this.character.faceRight();
-    	}
-    	else {
-    		this.character.faceLeft();
-    	}
       
         this.character.render(this.gc);
         
@@ -190,6 +184,9 @@ public class GameTimer extends AnimationTimer {
     // method for moving character and other objects
     void moveSprites() {
     	// character motion
+    	if(GameTimer.goLeft)  this.character.faceLeft(this.character.height, this.character.width);
+		else this.character.faceRight(this.character.height, this.character.width);
+    	
     	if(this.character.isGrounded()) {
     		this.moveCharacterGrounded();
     	}
@@ -332,7 +329,7 @@ public class GameTimer extends AnimationTimer {
 					
 					this.alreadyBuffed = true;
 					this.gc.fillText("Gained module buff!", 600, 60);
-					this.character.loadImage(new Image(Character.class.getResource("/sprites/character.png").toString(), this.character.width, this.character.height, false, false));
+					this.character.loadImage(new Image(Character.class.getResource("/right-char.png").toString(), this.character.width, this.character.height, false, false));
 				}
 				
 				if(buffElapsedTime > BUFF_DURATION) {
@@ -343,9 +340,10 @@ public class GameTimer extends AnimationTimer {
 					this.moduleBuff = false;
 					this.alreadyBuffed = false;
 					this.buffTime = System.nanoTime();
-					this.character.loadImage(new Image(Character.class.getResource("/sprites/character.png").toString(), this.character.width, this.character.height, false, false));	
+					this.character.loadImage(new Image(Character.class.getResource("/right-char.png").toString(), this.character.width, this.character.height, false, false));	
 				}
 			}
+			
 			else if(stackBuff == true){//spawn minigame buff
 				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
 				//start minigame
@@ -552,21 +550,6 @@ public class GameTimer extends AnimationTimer {
 		this.character.updatePosition();
 	}
 	
-	// method for collision handling between character and objects
-
-	// method for handling damage per second
-//	public void handleDamage() {
-//	    timer = new Timer();
-//	    timer.scheduleAtFixedRate(new TimerTask() {
-//	        @Override
-//	        public void run() {
-//	            if(character.isColliding) {
-//	            	System.out.println("Character health is: " + character.getHealth());
-//	                character.setHealth(character.getHealth() - 25);
-//	            }
-//	        }
-//	    }, 0, 500); // Run every half-sec
-//	}
 	
 	// method for handling collisions between char and obstacles
 
