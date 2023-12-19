@@ -129,8 +129,12 @@ public class GameTimer extends AnimationTimer {
     
     void renderSprites() {
     	// draw character
-    	if(GameTimer.goRight) this.character.faceRight();
-    	if(GameTimer.goLeft) this.character.faceLeft();
+    	if(GameTimer.goRight) {
+    		this.character.faceRight();
+    	}
+    	else {
+    		this.character.faceLeft();
+    	}
         this.character.render(this.gc);
         
         // draw Sprites in ArrayLists
