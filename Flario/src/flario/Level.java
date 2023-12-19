@@ -32,8 +32,10 @@ public class Level {
 	
 	public void generateLevel() {
 		Random r = new Random();
+		int currentDistance = 0;
 		int areaLength;
-		int pipeHeight, blockHeight, blockOffset;
+		int pipeHeight, blockHeight, n;
+		int lastObstacleHeight = GameTimer.GROUND_POSITION-64;
 		
 		while(currentDistance <= LEVEL_LENGTH) {
 			areaLength = r.nextInt(50) * 64;
@@ -63,13 +65,44 @@ public class Level {
 			
 			if(isGroundArea) {
 				for(int i = 0; i<4; i++) {
-					blockHeight = (r.nextInt(10)+2)*64;
+					n = r.nextInt(3);
+					if(n == 1) {
+						blockHeight = lastObstacleHeight - 128;
+					}
+					else if(n == 2) {
+						blockHeight = lastObstacleHeight + 128;
+					}
+					else {
+						blockHeight = lastObstacleHeight;
+					}
+					
+					if(blockHeight < 64) {
+						blockHeight += 128;
+					}
+					if(blockHeight > GameTimer.GROUND_POSITION-64) {
+						blockHeight -= 128;
+					}
+
+					n = r.nextInt(3);
+					if(n != 1) {
 					addBlock(currentDistance+(64*i), blockHeight);
+					}
+					lastObstacleHeight = blockHeight;
 				}
 			}
 			if(!isGroundArea) {
-				pipeHeight = (r.nextInt(44)+20)*10;
+				pipeHeight = lastObstacleHeight + (r.nextInt(32)-64)*4;
+				
+				if(pipeHeight < 256) {
+					pipeHeight += 256;
+				}
+				if(pipeHeight > GameTimer.GROUND_POSITION+192) {
+					pipeHeight -= 256;
+				}
+				
 				addPipes(currentDistance, pipeHeight, pipeHeight-PIPE_DISTANCE);
+
+				lastObstacleHeight = pipeHeight;
 			}
 			currentDistance += OBSTACLE_INTERVAL;
 		}
