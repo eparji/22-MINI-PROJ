@@ -11,14 +11,17 @@ public class Level {
 	public int[][] groundIntervals = new int[50][2]; 
 	public int[][] flyingIntervals = new int[50][2];
 	public int groundIntervalCounter, flyingIntervalCounter;
-	public int finishDistance;
+	public static int finishDistance;
 	
 	private final static int LEVEL_LENGTH = 5120; //10240;
 	private final static int OBSTACLE_INTERVAL = 256;
 	private final static int PIPE_DISTANCE = 750;
 	
+	public static int currentDistance;
+	
 	public Level() {
-		this.finishDistance = LEVEL_LENGTH;
+		Level.currentDistance = 0;
+		Level.finishDistance = LEVEL_LENGTH;
 		this.groundIntervalCounter = 0;
 		this.flyingIntervalCounter = 0;
     	this.pipes = new ArrayList<Pipe>();
@@ -29,7 +32,6 @@ public class Level {
 	
 	public void generateLevel() {
 		Random r = new Random();
-		int currentDistance = 0;
 		int areaLength;
 		int pipeHeight, blockHeight, blockOffset;
 		
@@ -80,12 +82,10 @@ public class Level {
 		this.topPipes.add(new Pipe(xPos, topPos, false));
 	}
 	
-	
 	// add a block
 	private void addBlock(int xPos, int yPos) {
 		this.blocks.add(new Block(xPos, yPos));
 	}
-	
 	
 	private void setGroundArea(int start, int end) {
 		int[] newInterval = {start, end};
@@ -97,5 +97,9 @@ public class Level {
 		int[] newInterval = {start, end};
 		this.flyingIntervals[flyingIntervalCounter] = newInterval;
 		flyingIntervalCounter += 1;
+	}
+	
+	public static boolean isFinished() {
+		return (currentDistance == finishDistance);
 	}
 }

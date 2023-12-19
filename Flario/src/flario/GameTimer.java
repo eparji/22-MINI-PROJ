@@ -86,7 +86,7 @@ public class GameTimer extends AnimationTimer {
     @Override
 	public void handle(long currentNanoTime)
     {
-	this.redrawBackgroundImage();
+    	this.redrawBackgroundImage();
 		
         //this.autoSpawn(currentNanoTime);
         this.renderSprites();
@@ -94,7 +94,7 @@ public class GameTimer extends AnimationTimer {
         this.moveSprites();
         this.drawScore();
         
-        if(!this.character.isAlive() || GameTimer.gameOver) {
+        if(!this.character.isAlive() || GameTimer.gameOver || Level.isFinished()) {
         	this.stop();
         	endCountdown();
         	GameStage.showGameOver(this.character.getScore(), gameTime);

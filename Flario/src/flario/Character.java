@@ -10,12 +10,7 @@ public class Character extends Sprite {
 	private boolean isGrounded;
 	private int health;
 	
-//<<<<<<< HEAD
 	private final static Image CHARACTER_IMAGE = new Image("character.png", 64, 64, false, false);
-//=======
-//	private final static Image CHARACTER_IMAGE = new Image("file:src/sprites/character.png", 64, 64, false, false);
-//>>>>>>> branch 'master' of https://github.com/eparji/22-MINI-PROJ.git
-//	private final static Image CHARACTER_IMAGE = new Image("images/character.png", 64, 64, false, false);
 	public final static double INITIAL_X = 0;
 	public final static double INITIAL_Y = 410;
 	public final static double CHARACTER_SPEEDY = 5;
@@ -31,7 +26,6 @@ public class Character extends Sprite {
 		this.score = INIT_SCORE;
 		this.isGrounded = false;
 		this.health = 100;
-		
 	}
 
 	String getName(){
