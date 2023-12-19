@@ -584,7 +584,7 @@ public class GameTimer extends AnimationTimer {
 					this.character.setPositionXY(block.getPositionX() - this.character.getWidth(), this.character.getPositionY());
 				}
 				
-				if(this.character.getPositionX() > block.getPositionX() + this.character.getWidth() - COLLISION_BUFFER) {
+				if(this.character.getPositionX() > block.getPositionX() + block.getWidth() - COLLISION_BUFFER) {
 					GameTimer.goLeft = false;
 					System.out.println("trigger4");
 					this.character.setPositionXY(block.getPositionX()+ block.getWidth(), this.character.getPositionY());
