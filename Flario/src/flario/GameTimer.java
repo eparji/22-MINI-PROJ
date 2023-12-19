@@ -185,7 +185,7 @@ public class GameTimer extends AnimationTimer {
     void moveSprites() {
     	// character motion
     	if(GameTimer.goLeft)  this.character.faceLeft(this.character.height, this.character.width);
-		else this.character.faceRight(this.character.height, this.character.width);
+		if(GameTimer.goRight) this.character.faceRight(this.character.height, this.character.width);
     	
     	if(this.character.isGrounded()) {
     		this.moveCharacterGrounded();
@@ -301,22 +301,20 @@ public class GameTimer extends AnimationTimer {
 
   
     // method for buff spawning
-
 	void checkBuff(long currentNanoTime) {
     	//random buff every 5 pipes
-    	
 			if(incentiveBuff == true) {//spawn incentive buff
 				double buffElapsedTime = (currentNanoTime - this.buffTime) / 1000000000.0;	
 				
 				this.alreadyBuffed = true;
-				this.gc.fillText("Gained incentive buff!", 600, 60);
+				this.gc.fillText("Gained incentive buff!", 600, 100);
 				
 				if(buffElapsedTime > BUFF_DURATION) {
 					
 					this.incentiveBuff = false;
 					this.alreadyBuffed = false;
 					this.buffTime = System.nanoTime();
-					this.gc.fillText("Incentive buff is gone!", 600, 60);
+					this.gc.fillText("Incentive buff is gone!", 600, 100);
 				}
 			}
 			
@@ -336,7 +334,7 @@ public class GameTimer extends AnimationTimer {
 					
 					this.character.width = this.character.width * 1.6;
 					this.character.height = this.character.height * 1.6;
-					this.gc.fillText("Module buff is gone!", 600, 60);
+					this.gc.fillText("Module buff is gone!", 600, 100);
 					this.moduleBuff = false;
 					this.alreadyBuffed = false;
 					this.buffTime = System.nanoTime();
@@ -349,7 +347,7 @@ public class GameTimer extends AnimationTimer {
 				//start minigame
 				
 				this.alreadyBuffed = true;
-				this.gc.fillText("Gained stack overflow buff!", 600, 60);
+				this.gc.fillText("Gained stack overflow buff!", 600, 100);
 				
     			MiniWindow minigame = new MiniWindow(); //launch mini game
     			minigame.start();
@@ -357,16 +355,16 @@ public class GameTimer extends AnimationTimer {
 				
 				this.stackBuff = false;
 				this.alreadyBuffed = false;
-				this.gc.fillText("Stack Overflow buff is gone!", 600, 60);
+				this.gc.fillText("Stack Overflow buff is gone!", 600, 100);
 			}
 			else if(changeMode == true) {//change mode
 				
 				this.alreadyBuffed = true;
-				this.gc.fillText("Change mode!", 600, 60);
+				this.gc.fillText("Change mode!", 600, 100);
 				
 				
 				this.alreadyBuffed = false;
-				this.gc.fillText("Back to ground!", 600, 60);
+				this.gc.fillText("Back to ground!", 600, 100);
 			}
 
     	}
@@ -441,7 +439,6 @@ public class GameTimer extends AnimationTimer {
 	public static void setGameTime(int time) { //adding collected time to game time
 		GameTimer.gameTime += time;
 	}
-	
   
 	// pauses game scene when minigame is triggered
 	private static void pauseTimerForDuration(AnimationTimer timer, Duration duration) {
@@ -454,7 +451,6 @@ public class GameTimer extends AnimationTimer {
 	private AnimationTimer getTimer() {
 		return this;
 	}
-	
   
 	// character motion in grounded mode
 	private void moveCharacterGrounded() {
@@ -505,10 +501,8 @@ public class GameTimer extends AnimationTimer {
 		  
 		  this.character.updatePosition();
 	}
-	
 
 	// character motion in flying mode
-
 	private void moveCharacterFlying() {
 		if (GameTimer.goLeft) {
 			if(this.character.getPositionX() <= LEFT_EDGE) {
@@ -550,9 +544,7 @@ public class GameTimer extends AnimationTimer {
 		this.character.updatePosition();
 	}
 	
-	
 	// method for handling collisions between char and obstacles
-
 	private void handleCollision() {
 		this.character.drawBounds(gc);
 		
@@ -572,7 +564,6 @@ public class GameTimer extends AnimationTimer {
 				this.character.setVelocityY(0);
 			}
 		}
-		
 		
 		for(int i = 0; i < this.blocks.size(); i++){ // block collision
 			Block block = this.blocks.get(i);
@@ -628,35 +619,28 @@ public class GameTimer extends AnimationTimer {
 			Incentive incentive = this.incentives.get(j);
 					
 			//incentive.drawBounds(gc);
-					
 			if(incentive.collidesWith(this.character)) {
 				this.incentiveBuff = true;
 				this.buffTime = System.nanoTime();
 				this.incentives.remove(j);
-
 			}	
-					
 		}
 				
 		for(int j = 0; j < this.stacks.size(); j++) {
 			StackOverflow stack = this.stacks.get(j);
 					
 			//stack.drawBounds(gc);
-					
 			if(stack.collidesWith(this.character)) {
 				this.stackBuff = true;
 				this.buffTime = System.nanoTime();
 				this.stacks.remove(j);
-			
 			}	
-					
 		}
 		
 		for(int j = 0; j < this.change.size(); j++) {
 			ChangeMode changeMode = this.change.get(j);
 					
 			//changeMode.drawBounds(gc);
-					
 			if(changeMode.collidesWith(this.character)) {
 				this.changeMode = true;
 				this.buffTime = System.nanoTime();
@@ -685,7 +669,6 @@ public class GameTimer extends AnimationTimer {
 	
 
 	// method for stopping the timeline
-
 	private void endCountdown() {
 		if (timeline != null) {
             timeline.stop();
@@ -715,18 +698,14 @@ public class GameTimer extends AnimationTimer {
 		return(normalizedTime);
 	}
 	
-
 	// logic behiind computing score
-
 	private String computeScore() {
 		int score = (int) (Character.INIT_SCORE - (elapsedTime*TIME_SCORE_MULT));
 		this.character.setScore(score);
 		return(String.format("%d", this.character.getScore()));
 	}
 	
-
 	// logic behind computing final score
-
 	private String computeFinalScore(int type) {
 		if(type ==1) return("INC");
 		int score = (int) (this.character.getScore() + (gameTime*FINAL_SCORE_MULT));
@@ -745,17 +724,13 @@ public class GameTimer extends AnimationTimer {
 		else return("5.00");
 	}
 	
-
 	// printing of score in console
-
 	private void printScore() {
 		System.out.println("TIME LEFT: " + computeTime());
 		System.out.println("USER'S GRADE IS: " + computeScore() + "\n");
 	}
 	
-
 	// drawing of score on the canvas
-
 	private void drawScore(){
 		this.gc.setFont(GameStage.FONT_8BIT);
 		this.gc.setFill(Color.YELLOW);
