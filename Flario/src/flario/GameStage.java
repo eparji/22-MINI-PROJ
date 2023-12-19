@@ -105,9 +105,15 @@ public class GameStage {
 			bgplayer.stop();
 			bgplayer = null;
 		}
+		
 		if(minigameplayer != null) {
 			minigameplayer.stop();
 			minigameplayer = null;
+		}
+		
+		if(gameover != null) {
+			gameover.stop();
+			gameover = null;
 		}
 		
 		gameplayer = new MediaPlayer(GameStage.GAME_MUSIC);
