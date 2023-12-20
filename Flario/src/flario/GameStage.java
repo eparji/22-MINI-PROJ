@@ -65,7 +65,7 @@ public class GameStage {
     static {
         InputStream is = GameStage.class.getResourceAsStream("/PressStart2P-Regular.ttf");
         FONT_8BIT = Font.loadFont(is, 20);
-      }
+     }
 
     
 	public GameStage(){

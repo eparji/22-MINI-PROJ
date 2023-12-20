@@ -19,7 +19,7 @@ public class Character extends Sprite {
 	public final static double INITIAL_Y = 410;
 	
 	// velocity of char when moving
-	public final static double CHARACTER_SPEEDY = 6;
+	public final static double CHARACTER_SPEEDY = 5.6;
 	public final static double CHARACTER_SPEEDX = 3;
 	
 	// dimensions

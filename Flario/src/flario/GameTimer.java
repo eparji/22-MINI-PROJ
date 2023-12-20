@@ -87,7 +87,7 @@ public class GameTimer extends AnimationTimer {
     	this.change = this.level.change;
     	this.changeCount = 0;
     	// game duration
-    	GameTimer.gameTime = 90;
+    	GameTimer.gameTime = 75;
     	GameTimer.elapsedTime = 0;
     	GameTimer.gameOver = false;
     	
@@ -311,7 +311,7 @@ public class GameTimer extends AnimationTimer {
 			
 			int add = r.nextInt(1, 5);
 			
-			if(buffElapsedTime > BUFF_DURATION) {
+//			if(buffElapsedTime > BUFF_DURATION) {
 				this.incentiveBuff = false;
 				this.alreadyBuffed = false;
 				this.buffTime = System.nanoTime();
@@ -319,7 +319,7 @@ public class GameTimer extends AnimationTimer {
 //				this.gc.fillText("Gained +" + add + "health!", 600, 100);
 				System.out.println("Gained +" + add + "health!");
 
-			}
+//			}
 		}
 		
 		else if(moduleBuff == true){//spawn module buff
@@ -327,7 +327,7 @@ public class GameTimer extends AnimationTimer {
 			
 			if(this.alreadyBuffed == false) {
 				this.character.width = this.character.width / 1.6;
-				this.character.width = this.character.height / 1.6;
+				this.character.height = this.character.height / 1.6;
 				
 				this.alreadyBuffed = true;
 //				this.gc.fillText("Gained module buff!", 600, 60);
@@ -355,6 +355,10 @@ public class GameTimer extends AnimationTimer {
 			//start minigame
 			this.alreadyBuffed = true;
 			System.out.println("Gained stack overflow buff!");
+			
+			GameTimer.goLeft = false;
+			GameTimer.goRight = false;
+			GameTimer.goUp = false;
 			
 			MiniWindow minigame = new MiniWindow(); //launch mini game
 			minigame.start();
@@ -389,8 +393,7 @@ public class GameTimer extends AnimationTimer {
     	this.scene.setOnKeyPressed(new EventHandler<KeyEvent>()
         {
 
-			public void handle(KeyEvent e)
-            {
+			public void handle(KeyEvent e) {
                 String code = e.getCode().toString();
                 System.out.println("User Pressed Key: " + code);
                 if(code.equals("LEFT") || code.equals("A") ) {
@@ -500,7 +503,7 @@ public class GameTimer extends AnimationTimer {
 		}
 		
 		if(GameTimer.goUp && isTouchingGround) {
-			this.character.setVelocityY(-Character.CHARACTER_SPEEDY); //jump
+			this.character.setVelocityY(-Character.CHARACTER_SPEEDY*1.25); //jump
 			GameTimer.isTouchingGround = false;
 		}else { // down
 			this.character.setVelocityY(this.character.getVelocityY()+GRAVITY_SPEED);
@@ -559,7 +562,7 @@ public class GameTimer extends AnimationTimer {
 	
 	// method for handling collisions between char and obstacles
 	private void handleCollision() {
-		this.character.drawBounds(gc);
+//		this.character.drawBounds(gc);
 		
 		for(int i = 0; i < this.pipes.size(); i++){ // pipe collision
 			Pipe pipe = this.pipes.get(i);
@@ -590,7 +593,6 @@ public class GameTimer extends AnimationTimer {
 				// clipping logic
 				if(this.character.getPositionY() < block.getPositionY() - this.character.getHeight() + COLLISION_BUFFER) {
 					this.character.setVelocityY(0);
-					System.out.println("trigger1");
 					this.character.setPositionXY(this.character.getPositionX(), block.getPositionY()-this.character.getHeight());
 					GameTimer.isTouchingGround = true;
 				}
@@ -602,13 +604,11 @@ public class GameTimer extends AnimationTimer {
 				
 				if(this.character.getPositionX() < block.getPositionX() - this.character.getWidth() + COLLISION_BUFFER ) {
 					GameTimer.goRight = false;
-					System.out.println("trigger3");
 					this.character.setPositionXY(block.getPositionX() - this.character.getWidth(), this.character.getPositionY());
 				}
 				
 				if(this.character.getPositionX() > block.getPositionX() + block.getWidth() - COLLISION_BUFFER) {
 					GameTimer.goLeft = false;
-					System.out.println("trigger4");
 					this.character.setPositionXY(block.getPositionX()+ block.getWidth(), this.character.getPositionY());
 				}
 			
@@ -724,6 +724,7 @@ public class GameTimer extends AnimationTimer {
 		this.character.setScore(score);
 		score = this.character.getScore();
 		
+		if(score >= 100) return("Professor");
 		if(score >= 95) return("1.00");
 		if(score >= 90) return("1.25");
 		if(score >= 85) return("1.50");
